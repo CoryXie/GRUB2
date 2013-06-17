@@ -27,12 +27,49 @@
 
 static int
 grub_vsnprintf_real (char *str, grub_size_t n, const char *fmt, va_list args);
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 判断一个字符是不是单词的分隔符。
+*
+* @note 注释详细内容: 
+*
+* 本函数实现判断一个字符是不是单词的分隔符的功能。如果该字符是空格" "，逗号",",
+* 竖直"|"，或者C语言的取地址符号"&"，那么该函数返回非零值。
+**/
 
 static int
 grub_iswordseparator (int c)
 {
   return (grub_isspace (c) || c == ',' || c == ';' || c == '|' || c == '&');
 }
+
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 翻译字符串函数指针。
+*
+* @note 注释详细内容: 
+*
+* 本函数实现翻译字符串的功能。gettext的工作流程是这样的：比如我们写一个C程序，
+* 通常printf等输出信息都是English的。如果我们在程序中加入gettext支持，在需要交 
+* 互的字符串上用gettext函数，程序运行是就可以先调用gettext函数处理字符串，替换
+* 当前的字符串了。注意是运行时替换。(本函数实现实际上不做任何翻译)。
+**/
 
 /* grub_gettext_dummy is not translating anything.  */
 static const char *
@@ -42,6 +79,33 @@ grub_gettext_dummy (const char *s)
 }
 
 const char* (*grub_gettext) (const char *s) = grub_gettext_dummy;
+
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 由src所指内存区域复制n个字节到dest所指内存区域。
+*
+* @note 注释详细内容: 
+*
+* memmove()与memcpy()一样都是用来拷贝src所指的内存内容前n个字节到dest所指的地址
+* 上。不同的是,当src和dest所指的内存区域重叠时,memmove()仍然可以正确的处理,不过
+* 执行效率上会比使用memcpy()略慢些。返回指向dest的指针。
+*
+* memcpy()、 memmove()和memccpy() 这三个函数的功能均是将某个内存块复制到另一个
+* 内存块。前两个函数的区别在于它们处理内存区域重叠(overlapping)的方式不同。第三
+* 个函数的功能也是复制内存，但是如果遇到某个特定值时立即停止复制。
+*
+* 对于库函数来说，由于没有办法知道传递给他的内存区域的情况，所以应该使用memmove()
+* 函数。通过这个函数，可以保证不会出现任何内存块重叠问题。而对于应用程序来说，
+* 因为代码“知道”两个内存块不会重叠，所以可以安全地使用memcpy()函数。
+**/
 
 void *
 grub_memmove (void *dest, const void *src, grub_size_t n)
@@ -275,6 +339,23 @@ grub_strncmp (const char *s1, const char *s2, grub_size_t n)
 
   return (int) (grub_uint8_t) *s1 - (int) (grub_uint8_t)  *s2;
 }
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 查找字符串s中首次出现字符c的位置。
+*
+* @note 注释详细内容: 
+*
+* 本函数实现兼容C语言函数库的strchr的功能。查找字符串s中首次出现字符c的位置。
+* 返回首次出现c的位置的指针，如果s中不存在c则返回NULL。
+**/
 
 char *
 grub_strchr (const char *s, int c)
@@ -323,6 +404,22 @@ grub_strrchr (const char *s, int c)
 
   return p;
 }
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 在一个字符串haystack中查找一个单词needle。
+*
+* @note 注释详细内容: 
+*
+* 本函数实现在一个字符串haystack中查找一个单词needle的功能。找到返回1，否则返回0。
+**/
 
 int
 grub_strword (const char *haystack, const char *needle)
@@ -373,6 +470,29 @@ grub_isprint (int c)
   return (c >= ' ' && c <= '~');
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 将字符串转换成无符号长整型数，返回转换后的长整型数。
+*
+* @note 注释详细内容: 
+*
+* 本函数实现将字符串转换成无符号长整型数的功能。strtoul()会将参数str字符串根据
+* 参数base来转换成无符号的长整型数。参数base范围从2至36，或0。参数base代表采用
+* 的进制方式，如base值为10则采用10进制，若base值为16则采用16进制数等。当base值
+* 为0时会根据情况选择用哪种进制：如果第一个字符是'0'，就判断第二字符如果是‘x’
+* 则用16进制，否则用8进制；第一个字符不是‘0’，则用10进制。一开始strtoul()会
+* 扫描参数str字符串，跳过前面的空格字符串，直到遇上数字或正负符号才开始做转换，
+* 再遇到非数字或字符串结束时('')结束转换，并将结果返回。若参数end不为NULL，
+* 则会将遇到不合条件而终止的str中的字符指针由end返回。
+**/
 
 unsigned long
 grub_strtoul (const char *str, char **end, int base)
@@ -612,6 +732,23 @@ grub_reverse (char *str)
       p--;
     }
 }
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 完成64位除法运算。
+*
+* @note 注释详细内容: 
+*
+* 本函数实现完成64位除法运算的功能。将64位数n用64位数d除，将除法的商作为返回值，
+* 将余数存储在输出参数r中。
+**/
 
 /* Divide N by D, return the quotient, and store the remainder in *R.  */
 grub_uint64_t
@@ -657,6 +794,24 @@ grub_divmod64 (grub_uint64_t n, grub_uint64_t d, grub_uint64_t *r)
   return q;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 将long long类型的参数n转换为字符串。
+*
+* @note 注释详细内容: 
+*
+* 本函数实现将long long类型的参数n转换为字符串的功能。参数str为转换后存储到的
+* 目的字符串，参数c为转换的基数，参数n为要转换的64位无符号数(unsigned long long)。
+**/
+
 /* Convert a long long value to a string. This function avoids 64-bit
    modular arithmetic or divisions.  */
 static char *
@@ -696,6 +851,27 @@ grub_lltoa (char *str, int c, unsigned long long n)
   grub_reverse (str);
   return p;
 }
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 将可变参数格式化输出到一个字符串。
+*
+* @note 注释详细内容: 
+*
+* 本函数实现将可变参数格式化输出到一个字符串的功能。参数str为把生成的格式化的字
+* 符串存放在这里;参数max_len控制buffer可接受的最大字节数,防止产生数组越界；参数
+* fmt0为指定输出格式的字符串，它决定了你需要提供的可变参数的类型、个数和顺序；
+* 参数args_in为可变参数。用法类似于vsprintf，不过加了max_len的限制，防止了内存溢出
+*（max_len为str所指的存储空间的大小）。执行成功，返回写入到字符数组str中的字符个数
+*（不包含终止符），最大不超过max_len；执行失败，返回负值。
+**/
 
 static int
 grub_vsnprintf_real (char *str, grub_size_t max_len, const char *fmt0, va_list args_in)
@@ -1107,6 +1283,26 @@ grub_vsnprintf (char *str, grub_size_t n, const char *fmt, va_list ap)
 
   return ret < n ? ret : n;
 }
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 将可变个参数(...)按照fmt格式化成字符串，然后将其复制到str中。
+*
+* @note 注释详细内容: 
+*
+* 本函数实现将可变个参数(...)按照fmt格式化成字符串，然后将其复制到str中的功能。
+* (1) 如果格式化后的字符串长度 < n，则将此字符串全部复制到str中，并给其后添加
+* 一个字符串结束符('\0')；(2) 如果格式化后的字符串长度 >= n，则只将其中的(n-1)
+* 个字符复制到str中，并给其后添加一个字符串结束符('\0')，返回值为格式化后的字
+* 符串的长度。
+**/
 
 int
 grub_snprintf (char *str, grub_size_t n, const char *fmt, ...)
