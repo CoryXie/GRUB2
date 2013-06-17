@@ -28,7 +28,26 @@
 #include <grub/i18n.h>
 
 grub_net_t (*grub_net_open) (const char *name) = NULL;
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 打开设备。
+*
+* @note 注释详细内容:
+*
+* 本函数实现打开设备的功能。
+*
+* 如果设备名为空，那么先调用grub_env_get()获取根设备名称；接着尝试使用grub_disk_open()
+* 来打开磁盘设备；如果打开失败，那么在尝试使用grub_net_open()来打开网络设备。不论是哪类
+* 设备，最后都将打开的设备的句柄保存下来到返回。
+**/
 grub_device_t
 grub_device_open (const char *name)
 {
@@ -56,7 +75,7 @@ grub_device_open (const char *name)
   if (grub_net_open && grub_errno == GRUB_ERR_UNKNOWN_DEVICE)
     {
       grub_errno = GRUB_ERR_NONE;
-      dev->net = grub_net_open (name); 
+      dev->net = grub_net_open (name);
     }
 
   if (dev->net)
@@ -68,6 +87,25 @@ grub_device_open (const char *name)
   return 0;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 关闭设备。
+*
+* @note 注释详细内容:
+*
+* 本函数实现关闭设备的功能。
+*
+* 如果打开该设备时是打开的磁盘设备，则调用grub_disk_close()；否则如果打开时是网络设备，
+* 那么就释放网络设备的资源。
+**/
 grub_err_t
 grub_device_close (grub_device_t device)
 {
@@ -84,7 +122,26 @@ grub_device_close (grub_device_t device)
 
   return grub_errno;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 枚举设备列表，对每个磁盘设备的每个设备分区都调用参数指定的钩子函数。
+*
+* @note 注释详细内容:
+*
+* 本函数实现枚举设备列表，对每个设备都调用参数指定的钩子函数的功能。
+*
+* 使用递归的办法，调用grub_disk_dev_iterate()时指定的函数指针iterate_disk()在被调用
+* 时，表示每个被枚举到的磁盘都会被调用一遍；而iterate_disk()又用grub_partition_iterate()
+* 来递归调用iterate_partition()，进而可以实现枚举每个磁盘设备的每个设备分区的功能。
+**/
 int
 grub_device_iterate (int (*hook) (const char *name))
 {
