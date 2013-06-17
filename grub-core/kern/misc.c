@@ -1,4 +1,4 @@
-/* misc.c - definitions of misc functions */
+﻿/* misc.c - definitions of misc functions */
 /*
  *  GRUB  --  GRand Unified Bootloader
  *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010  Free Software Foundation, Inc.
@@ -290,23 +290,23 @@ grub_strchr (const char *s, int c)
 }
 
 /**
-* @attention ��ע�͵õ���"�˸߻�"�Ƽ��ش�ר��2012����⡰��Դ����ϵͳ�ں˷����Ͱ�ȫ������
-*�������ţ�2012ZX01039-004������������
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
 *
-* @copyright ע�����ӵ�λ���廪��ѧ����03����Linux�ں����ͨ�û����������������е���λ
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
 *
-* @author ע��������Ա��л��ѧ
+* @author 注释添加人员：谢文学
 *
-* @date ע���������ڣ�2013��6��8��
+* @date 注释添加日期：2013年6月8日
 *
-* @brief ����һ���ַ�c����һ���ַ���s��ĩ�γ��ֵ�λ�á�
+* @brief 查找一个字符c在另一个字符串s中末次出现的位置。
 *
-* @note ע����ϸ����: 
+* @note 注释详细内容: 
 *
-* ������ʵ�ּ���C���Ժ������strrchr�Ĺ��ܡ�����һ���ַ�c����һ���ַ���s��ĩ��
-* ���ֵ�λ�ã�Ҳ���Ǵ�s���Ҳ࿪ʼ�����ַ�c�״γ��ֵ�λ�ã��������ش��ַ����е�
-* ���λ����һֱ���ַ��������������ַ������δ���ҵ�ָ���ַ�����ô����������
-* NULL��
+* 本函数实现兼容C语言函数库的strrchr的功能。查找一个字符c在另一个字符串s中末次
+* 出现的位置（也就是从s的右侧开始查找字符c首次出现的位置），并返回从字符串中的
+* 这个位置起，一直到字符串结束的所有字符。如果未能找到指定字符，那么函数将返回
+* NULL。
 **/
 
 char *
@@ -460,26 +460,26 @@ grub_strtoull (const char *str, char **end, int base)
 }
 
 /**
-* @attention ��ע�͵õ���"�˸߻�"�Ƽ��ش�ר��2012����⡰��Դ����ϵͳ�ں˷����Ͱ�ȫ������
-*�������ţ�2012ZX01039-004������������
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
 *
-* @copyright ע�����ӵ�λ���廪��ѧ����03����Linux�ں����ͨ�û����������������е���λ
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
 *
-* @author ע��������Ա��л��ѧ
+* @author 注释添加人员：谢文学
 *
-* @date ע���������ڣ�2013��6��8��
+* @date 注释添加日期：2013年6月8日
 *
-* @brief ������ s ָ����ַ������Ƶ�һ���ַ���ָ����ȥ��
+* @brief 将参数 s 指向的字符串复制到一个字符串指针上去。
 *
-* @note ע����ϸ����: 
+* @note 注释详细内容: 
 *
-* ������ʵ�ּ���C���Ժ������strdup�Ĺ��ܡ�
+* 本函数实现兼容C语言函数库的strdup的功能。
 *
-* grub_strdup() ���������� s ָ����ַ������Ƶ�һ���ַ���ָ����ȥ������ַ���ָ��
-* ���ȿ���û����ʼ�����ڸ���ʱ��grub_strdup() ������ָ��ʹ�� grub_malloc() ��
-* ��ռ䣬�������ʹ�����ָ�룬��Ӧ���� grub_free() ���ͷŵ��ⲿ�ֿռ䡣
+* grub_strdup() 函数将参数 s 指向的字符串复制到一个字符串指针上去，这个字符串指针
+* 事先可以没被初始化。在复制时，grub_strdup() 会给这个指针使用 grub_malloc() 分
+* 配空间，如果不再使用这个指针，相应的用 grub_free() 来释放掉这部分空间。
 *
-* strndup() ����ֻ����ǰ�� n ���ַ���
+* strndup() 函数只复制前面 n 个字符。
 **/
 char *
 grub_strdup (const char *s)
@@ -497,26 +497,26 @@ grub_strdup (const char *s)
 
 
 /**
-* @attention ��ע�͵õ���"�˸߻�"�Ƽ��ش�ר��2012����⡰��Դ����ϵͳ�ں˷����Ͱ�ȫ������
-*�������ţ�2012ZX01039-004������������
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
 *
-* @copyright ע�����ӵ�λ���廪��ѧ����03����Linux�ں����ͨ�û����������������е���λ
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
 *
-* @author ע��������Ա��л��ѧ
+* @author 注释添加人员：谢文学
 *
-* @date ע���������ڣ�2013��6��8��
+* @date 注释添加日期：2013年6月8日
 *
-* @brief ������ s ָ����ַ�����ǰ�� n ���ַ����Ƶ�һ���ַ���ָ����ȥ��
+* @brief 将参数 s 指向的字符串的前面 n 个字符复制到一个字符串指针上去。
 *
-* @note ע����ϸ����: 
+* @note 注释详细内容: 
 *
-* ������ʵ�ּ���C���Ժ������strdup�Ĺ��ܡ�
+* 本函数实现兼容C语言函数库的strdup的功能。
 *
-* grub_strdup() ���������� s ָ����ַ������Ƶ�һ���ַ���ָ����ȥ������ַ���ָ��
-* ���ȿ���û����ʼ�����ڸ���ʱ��grub_strdup() ������ָ��ʹ�� grub_malloc() ��
-* ��ռ䣬�������ʹ�����ָ�룬��Ӧ���� grub_free() ���ͷŵ��ⲿ�ֿռ䡣
+* grub_strdup() 函数将参数 s 指向的字符串复制到一个字符串指针上去，这个字符串指针
+* 事先可以没被初始化。在复制时，grub_strdup() 会给这个指针使用 grub_malloc() 分
+* 配空间，如果不再使用这个指针，相应的用 grub_free() 来释放掉这部分空间。
 *
-* strndup() ����ֻ����ǰ�� n ���ַ���
+* strndup() 函数只复制前面 n 个字符。
 **/
 
 char *
@@ -1121,6 +1121,27 @@ grub_snprintf (char *str, grub_size_t n, const char *fmt, ...)
   return ret;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 将可变个参数ap按照fmt格式化成字符串并返回。
+*
+* @note 注释详细内容: 
+*
+* 本函数实现将可变个参数ap按照fmt格式化成字符串并返回的功能。
+*
+* (1) 如果格式化后的字符串长度 < PREALLOC_SIZE，则将此字符串全部复制到str中，并给其后添加
+* 一个字符串结束符('\0')；(2) 如果格式化后的字符串长度 >= PREALLOC_SIZE，则只将其中的(n-1)
+* 个字符复制到str中，并给其后添加一个字符串结束符('\0')，返回值为格式化后的字
+* 符串的长度。
+**/
 char *
 grub_xvasprintf (const char *fmt, va_list ap)
 {
@@ -1147,7 +1168,27 @@ grub_xvasprintf (const char *fmt, va_list ap)
       as = s;
     }
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 将可变个参数ap按照fmt格式化成字符串并返回。
+*
+* @note 注释详细内容: 
+*
+* 本函数实现将可变个参数(...)按照fmt格式化成字符串并返回的功能。
+*
+* (1) 如果格式化后的字符串长度 < PREALLOC_SIZE，则将此字符串全部复制到str中，并给其后添加
+* 一个字符串结束符('\0')；(2) 如果格式化后的字符串长度 >= PREALLOC_SIZE，则只将其中的(n-1)
+* 个字符复制到str中，并给其后添加一个字符串结束符('\0')，返回值为格式化后的字
+* 符串的长度。
+**/
 char *
 grub_xasprintf (const char *fmt, ...)
 {
@@ -1161,6 +1202,22 @@ grub_xasprintf (const char *fmt, ...)
   return ret;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 中止运行当前命令。
+*
+* @note 注释详细内容: 
+*
+* 本函数实现中止运行当前命令的功能。
+**/
 /* Abort GRUB. This function does not return.  */
 void
 grub_abort (void)

@@ -21,6 +21,27 @@
 #include <grub/command.h>
 
 grub_command_t grub_command_list;
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 判断一个字符是不是单词的分隔符。
+*
+* @note 注释详细内容: 
+*
+* 本函数实现判断一个字符是不是单词的分隔符的功能。
+*
+* 该函数扫描grub_command_list，按照命令名字顺序插入该链表；如果发现相同名字的
+* 命令，且如果函数指定的这个新命令的优先级比已有的命令优先级更高，则将原有命令
+* 设为"不活动"(清除掉GRUB_COMMAND_FLAG_ACTIVE位)并退出循环，然后将新命令插入在
+* 这个同名的名字前，然后将新命令设置为"活动"(设置GRUB_COMMAND_FLAG_ACTIVE)。
+**/
 
 grub_command_t
 grub_register_command_prio (const char *name,

@@ -1,4 +1,4 @@
-/*
+﻿/*
  *  GRUB  --  GRand Unified Bootloader
  *  Copyright (C) 1999,2000,2001,2002,2003,2005,2006,2007,2008,2009,2011 Free Software Foundation, Inc.
  *
@@ -49,79 +49,81 @@
 #endif
 
 /**
-* @attention ��ע�͵õ���"�˸߻�"�Ƽ��ش�ר��2012����⡰��Դ����ϵͳ�ں˷����Ͱ�ȫ������
-*�������ţ�2012ZX01039-004������������
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
 *
-* @copyright ע�����ӵ�λ���廪��ѧ����03����Linux�ں����ͨ�û����������������е���λ
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
 *
-* @author ע��������Ա��л��ѧ
+* @author 注释添加人员：谢文学
 *
-* @date ע���������ڣ�2013��6��8��
+* @date 注释添加日期：2013年6月8日
 *
-* @note ע����ϸ����:
+* @brief 启动代码第三阶段
 *
-* ��1����X86 CPU����ʱ��CS=0xFFFF��IP=0������ʵģʽ�������ӵ�ַ0xFFFF0��ȡ����һ��
-* ָ�BIOS ROM�ĵ�һ��ָ����Ƿ�������ģ���˿�ʼ��BIOS�����С�
+* @note 注释详细内容:
+*
+* 第1步，X86 CPU启动时，CS=0xFFFF，IP=0，按照实模式工作，从地址0xFFFF0处取到第一条
+* 指令；BIOS ROM的第一条指令就是放在这里的，因此开始了BIOS的运行。
 * 
-* ��2����BIOS���й����У�������������Ӳ������Ӳ����ʼ��֮�⣬����һ���ؼ��ĵط���Ҫ
-* ����ʵģʽ�µ��ж���������Interrupt Vector Table (IVT)����λ��0��ַ��������װ��Ӧ��
-* �Ϻŵ��жϴ�������(ISR)��BIOS���Ż���ϵͳ�����������豸���û������ø��������豸��
-* ���˳�򣩣����ε���INT 0x19����ȡ���һ���������������������ǡ���ĩβ2���ֽڡ���
-* ����ȷ�� ������������ȷ���ͻ�Ѹ������������ص��ڴ��ַ0x07C00����������ת��0x07C00
-* ������ִ�С���ˣ��ڴ�ʵģʽ�л�������ģʽ֮ǰ��ʵ���϶�������BIOS�������������У�
-* ��˾Ϳ�����BIOS�ṩ���жϵ��ã���ʹ�õ��жϷ������Ҳ����ǰ�����ж��������а�װ��
-* ISR��
+* 第2步，BIOS运行过程中，除了做基本的硬件检测和硬件初始化之外，还有一个关键的地方是要
+* 设置实模式下的中端向量表【Interrupt Vector Table (IVT)】，位于0地址处，并安装对应中
+* 断号的中断处理程序(ISR)。BIOS接着会检测系统的现有启动设备（用户可设置各个启动设备的
+* 相对顺序），依次调用INT 0x19来读取其第一个扇区，并检测其启动标记【最末尾2个字节】是
+* 否正确。 如果启动标记正确，就会把该启动扇区加载到内存地址0x07C00处，并且跳转到0x07C00
+* 处接着执行。因此，在从实模式切换到保护模式之前，实际上都还是在BIOS的上下文中运行，
+* 因此就可以做BIOS提供的中断调用，所使用的中断服务程序也就是前面在中断向量表中安装的
+* ISR。
 * 
-* ��3����BIOS����������������ת��0x07C00���󣬾Ϳ�ʼ��������Bootloader��ִ�У��������
-* ������Ҫ������GRUB�ĵ�һ��������CPUִ�еĴ��롣��δ���λ��
-* ��grub-2.00\grub-core\boot\i386\pc\boot.S����BIOS��ת��0x07C00��ͨ��JMPʵ�ֵ� 
-* (CS:IP 0:0x7C00)����ˣ�����boot.S�п�ʼ����ʱ�Ĵ���μĴ�����ָ��ָ��Ĵ�ֱ���
-* CS=0��IP=0x7C00��
+* 第3步，BIOS加载启动扇区并跳转到0x07C00处后，就开始了真正的Bootloader的执行，这就是我
+* 们这里要分析的GRUB的第一段真正被CPU执行的代码。这段代码位于
+* 【grub-2.00\grub-core\boot\i386\pc\boot.S】。BIOS跳转到0x07C00是通过JMP实现的 
+* (CS:IP 0:0x7C00)，因此，当在boot.S中开始运行时的代码段寄存器和指令指针寄存分别是
+* CS=0，IP=0x7C00。
 * 
-* ��4����������������Ŀǰ������ʵģʽ����ʼ�������ݶκͶ�ջ�μĴ�����DS��SS��Ϊ0����
-* ����μĴ���CS��ǰ��һ���Ѿ�������Ϊ0���������ö�ջָ��Ĵ���SPΪ
-* GRUB_BOOT_MACHINE_STACK_SEG����Ϊ0x2000��
+* 第4步，启动扇区程序目前还处于实模式，开始设置数据段和堆栈段寄存器（DS和SS）为0，而
+* 代码段寄存器CS在前面一步已经被设置为0。接着设置堆栈指针寄存器SP为
+* GRUB_BOOT_MACHINE_STACK_SEG，即为0x2000。
 * 
-* ��5������������豸���豸����BIOS����תǰ������DL�Ĵ����У��Ƿ�֧��LBAģʽ��������
-* �������������LBAģʽ����CHSģʽ���������豸��
+* 第5步，检测启动设备（设备号由BIOS在跳转前保存在DL寄存器中）是否支持LBA模式。并根据
+* 检测结果决定按照LBA模式还是CHS模式访问启动设备。
 * 
-* ��6��������ǰ����������豸����ģʽ��ѡ���lba_mode��֧���Ǵ�chs_mode��֧��ȡGRUB
-* ��һ�׶εĴ��루��diskboot.S��Ӧ���룩���ڴ��У�����δ������ʼ���������Ϊ
-* kernel_sector����������Ϊ1��kernel_sector������ڵ�ַ��ֵ�������ڱ���ʱ�̶��ģ���
-* ���ڱ�����ɺ�ͨ��grub-mkimage��������ģ��޸�boot.S��Ӧ�Ķ����ƴ��룩����
-* diskboot.S��Ӧ�Ĵ��뱻������ڴ棬���ڴ��GRUB_BOOT_MACHINE_BUFFER_SEG��ֵΪ
-* 0x7000��Ҳ��diskboot.S��Ӧ����ᱻ������ַ0x70000����
+* 第6步，根据前面检测的启动设备访问模式，选择从lba_mode分支还是从chs_mode分支读取GRUB
+* 下一阶段的代码（即diskboot.S对应代码）到内存中，而这段代码的起始扇区被标记为
+* kernel_sector，扇区个数为1。kernel_sector标记所在地址的值并不是在编译时固定的，而
+* 是在编译完成后，通过grub-mkimage工具填入的（修改boot.S对应的二进制代码）。而
+* diskboot.S对应的代码被读入的内存，该内存段GRUB_BOOT_MACHINE_BUFFER_SEG的值为
+* 0x7000，也即diskboot.S对应代码会被读到地址0x70000处。
 * 
-* ��7������diskboot.S��Ӧ���뱻����󣬻��ᱻͨ��copy_buffer������
-* GRUB_BOOT_MACHINE_KERNEL_ADDR����GRUB_BOOT_MACHINE_KERNEL_SEG��Ӧ��ַ����
-* �����GRUB_BOOT_MACHINE_KERNEL_SEG���ڱ���ʱͨ��ƴ�Ӷ��ɵģ��������Զ����ɵ�λ��
-* include/grub/offset.h�е�GRUB_BOOT_I386_PC_KERNEL_SEG����ֵΪ0x800�����diskboot.S
-* ��Ӧ���뱻������0x8000���� 
+* 第7步，当diskboot.S对应代码被读入后，还会被通过copy_buffer拷贝到
+* GRUB_BOOT_MACHINE_KERNEL_ADDR（即GRUB_BOOT_MACHINE_KERNEL_SEG对应地址），
+* 而这个GRUB_BOOT_MACHINE_KERNEL_SEG是在编译时通过拼接而成的，来自于自动生成的位于
+* include/grub/offset.h中的GRUB_BOOT_I386_PC_KERNEL_SEG，其值为0x800，因此diskboot.S
+* 对应代码被拷贝到0x8000处。 
 * 
-* ��8����ͨ��jmp *(kernel_address)��ת��0x8000������ִ��diskboot.S��Ӧ���롣
+* 第8步，通过jmp *(kernel_address)跳转到0x8000处继续执行diskboot.S对应代码。
 * 
-* ��9������diskboot.S��Ӧ�����ڲ���ͨ��bootloop����GRUB�����׶δ��롣����ĵ����׶�
-* ��������blocklist_default_start��Ŵ������ݶ�Ӧ����ʼ������ Ĭ�ϴ�sector 2��ʼ��
-* �ܹ�����������blocklist_default_len������Щֵ��grub-mkimage�ڱ������ͨ��
-* ��дdiskboot.S��Ӧ�Ķ������ļ�������ġ�����δ��뱻�����Ŀ�ĵ�ַ����
-* blocklist_default_seg��Ŵ������ݣ���(GRUB_BOOT_MACHINE_KERNEL_SEG + 0x20)
-* ����������GRUB_BOOT_MACHINE_KERNEL_SEG��ǰ������ֵΪ0x800�����
-* blocklist_default_seg��Ŵ�������Ϊ0x820��Ҳ����˵��GRUB�ĵ����׶δ��뱻���뵽��
-* 0x8200����
+* 第9步，在diskboot.S对应代码内部，通过bootloop读入GRUB第三阶段代码。这里的第三阶段
+* 代码来自blocklist_default_start标号处的内容对应的起始扇区， 默认从sector 2开始，
+* 总共的扇区数是blocklist_default_len，而这些值是grub-mkimage在编译后期通过
+* 改写diskboot.S对应的二进制文件而填入的。而这段代码被读入的目的地址是由
+* blocklist_default_seg标号处的内容，即(GRUB_BOOT_MACHINE_KERNEL_SEG + 0x20)
+* 所决定，而GRUB_BOOT_MACHINE_KERNEL_SEG如前所述其值为0x800，因此
+* blocklist_default_seg标号处的内容为0x820，也就是说，GRUB的第三阶段代码被读入到了
+* 0x8200处。
 * 
-* ��10������diskboot.S�е�bootloop��ȡ������е�GRUB�����׶δ���ʱ������ת��
-* bootit��ִ�С�������jmp��GRUB_BOOT_MACHINE_KERNEL_ADDR+0x200����0x8200������
-* ��ʼִ�иոն�������GRUB�����׶δ��봦��
+* 第10步，当diskboot.S中的bootloop读取完毕所有的GRUB第三阶段代码时，就跳转到
+* bootit处执行。进而又jmp到GRUB_BOOT_MACHINE_KERNEL_ADDR+0x200（即0x8200）处，
+* 开始执行刚刚读进来的GRUB第三阶段代码处。
 * 
-* ��11���������׶δ����Ǿ���ѹ���ģ�����ӳ��ͷ��grub-core/boot/i386/pc/startup_raw.S��
-* grub-core/boot/i386/pc/lzma_decode.S��һ��δѹ�����룬�Ա���뱣��ģʽ�����Խ�ѹ��
-* ��GRUB_MEMORY_MACHINE_DECOMPRESSION_ADDR��Ҳ��0x100000��,����ת���õ�ַ����ִ�У�
-* ���ⲿ�ִ���Ŀ�ʼ����grub-core/kern/i386/pc/startup.S��
+* 第11步，第三阶段代码是经过压缩的，但是映像开头是grub-core/boot/i386/pc/startup_raw.S和
+* grub-core/boot/i386/pc/lzma_decode.S的一段未压缩代码，以便进入保护模式并用以解压缩
+* 至GRUB_MEMORY_MACHINE_DECOMPRESSION_ADDR，也即0x100000处,并跳转到该地址继续执行，
+* 而这部分代码的开始就是grub-core/kern/i386/pc/startup.S。
 * 
-* ��12������δ�����ʼ���־��ǽ��ղŽ�ѹ���Ĵ��븴�ƻص������ӵ�ַ
-* ��GRUB_KERNEL_I386_PC_LINK_ADDR����0x9000����Ȼ������ת�ص����ӵ�ַ������bss�Σ�
-* ���յ���grub-core/kern/main.c�е�grub_main()������GRUB��ʼ����C���Ա�д��kernel
-* ��GRUB�Լ����ںˣ�ִ�С�
+* 第12步，这段代码的最开始部分就是将刚才解压缩的代码复制回到其链接地址
+* （GRUB_KERNEL_I386_PC_LINK_ADDR，即0x9000），然后又跳转回到链接地址，清零bss段，
+* 最终调用grub-core/kern/main.c中的grub_main()。于是GRUB开始进入C语言编写的kernel
+* （GRUB自己的内核）执行。
 **/
 
 	.file	"startup.S"
