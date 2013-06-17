@@ -28,6 +28,28 @@
 #include <grub/command.h>
 #include <grub/i18n.h>
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 设置环境变量命令处理函数。
+*
+* @note 注释详细内容:
+*
+* 本函数实现设置环境变量命令处理功能。命令格式如下：
+*
+* set ENVVAR=VALUE
+*
+* 先将参数使用grub_strchr()，获得由“=”分开的ENVVAR=VALUE类型的环境变量名称以及环境变量
+* 的值，然后调用grub_env_set()来实际存储环境变量（名称和值对）。如果参数个数为0，即只
+* 调用set，那么就使用grub_env_iterate()循环列出所有的环境变量。
+**/
 /* set ENVVAR=VALUE */
 static grub_err_t
 grub_core_cmd_set (struct grub_command *cmd __attribute__ ((unused)),
@@ -61,7 +83,26 @@ grub_core_cmd_set (struct grub_command *cmd __attribute__ ((unused)),
 
   return 0;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 取消环境变量命令处理函数。
+*
+* @note 注释详细内容:
+*
+* 本函数实现取消环境变量命令处理功能。命令格式如下：
+*
+* unset ENVVAR
+*
+* 实际是直接调用grub_env_unset()来实际取消环境变量（名称和值对）。
+**/
 static grub_err_t
 grub_core_cmd_unset (struct grub_command *cmd __attribute__ ((unused)),
 		     int argc, char *argv[])
@@ -73,7 +114,27 @@ grub_core_cmd_unset (struct grub_command *cmd __attribute__ ((unused)),
   grub_env_unset (argv[0]);
   return 0;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 插入模块命令处理。
+*
+* @note 注释详细内容:
+*
+* 本函数实现插入模块命令处理的功能。命令格式如下：
+*
+* insmod MODULE
+*
+* 如果参数argv的第一个字节是'/'，'('，或者'+'，那么调用grub_dl_load_file()，否则就调用
+* grub_dl_load()来加载对应的模块，并使用grub_dl_ref()来对模块进行一次引用。
+**/
 /* insmod MODULE */
 static grub_err_t
 grub_core_cmd_insmod (struct grub_command *cmd __attribute__ ((unused)),
@@ -94,7 +155,22 @@ grub_core_cmd_insmod (struct grub_command *cmd __attribute__ ((unused)),
 
   return 0;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 打印设备名称。
+*
+* @note 注释详细内容:
+*
+* 本函数实现打印设备名称的功能。
+**/
 static int
 grub_mini_print_devices (const char *name)
 {
@@ -102,7 +178,22 @@ grub_mini_print_devices (const char *name)
 
   return 0;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 打印文件名称。
+*
+* @note 注释详细内容:
+*
+* 本函数实现打印文件名称的功能。
+**/
 static int
 grub_mini_print_files (const char *filename,
 		       const struct grub_dirhook_info *info)
@@ -111,7 +202,26 @@ grub_mini_print_files (const char *filename,
 
   return 0;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 列出文件命令的处理函数。
+*
+* @note 注释详细内容:
+*
+* 本函数实现列出文件命令的处理的功能。
+*
+* 根据参数的路径名使用grub_file_get_device_name()找到存储设备名，然后根据设备名
+* 使用grub_device_open()来打开设备，并使用grub_fs_probe()探测设备使用的是何种文
+* 件系统,进而使用对应的文件系统的dir函数指针来实现列出文件的功能。之后关闭设备。
+**/
 /* ls [ARG] */
 static grub_err_t
 grub_core_cmd_ls (struct grub_command *cmd __attribute__ ((unused)),
@@ -119,7 +229,7 @@ grub_core_cmd_ls (struct grub_command *cmd __attribute__ ((unused)),
 {
   if (argc < 1)
     {
-      grub_device_iterate (grub_mini_print_devices);
+      grub_device_iterate (grub_mini_print_devices);grub_file_get_device_name
       grub_xputs ("\n");
       grub_refresh ();
     }
@@ -174,7 +284,25 @@ grub_core_cmd_ls (struct grub_command *cmd __attribute__ ((unused)),
 
   return grub_errno;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 注册核心（在rescue模式下可用的）命令。
+*
+* @note 注释详细内容:
+*
+* 本函数实现注册核心（在rescue模式下可用的）命令的功能。
+*
+* 包括set，unset，ls，以及insmod这几个关键的核心命令。有了这几个命令，就可以处理
+* 环境变量，列出文件，以及加载模块等基本功能。
+**/
 void
 grub_register_core_commands (void)
 {

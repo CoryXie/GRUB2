@@ -22,25 +22,25 @@
 
 grub_command_t grub_command_list;
 /**
-* @attention ±¾×¢ÊÍµÃµ½ÁË"ºË¸ß»ù"¿Æ¼¼ÖØ´ó×¨Ïî2012Äê¿ÎÌâ¡°¿ªÔ´²Ù×÷ÏµÍ³ÄÚºË·ÖÎöºÍ°²È«ÐÔÆÀ¹À
-*£¨¿ÎÌâ±àºÅ£º2012ZX01039-004£©¡±µÄ×ÊÖú¡£
+* @attention æœ¬æ³¨é‡Šå¾—åˆ°äº†"æ ¸é«˜åŸº"ç§‘æŠ€é‡å¤§ä¸“é¡¹2012å¹´è¯¾é¢˜â€œå¼€æºæ“ä½œç³»ç»Ÿå†…æ ¸åˆ†æžå’Œå®‰å…¨æ€§è¯„ä¼°
+*ï¼ˆè¯¾é¢˜ç¼–å·ï¼š2012ZX01039-004ï¼‰â€çš„èµ„åŠ©ã€‚
 *
-* @copyright ×¢ÊÍÌí¼Óµ¥Î»£ºÇå»ª´óÑ§¡ª¡ª03ÈÎÎñ£¨LinuxÄÚºËÏà¹ØÍ¨ÓÃ»ù´¡Èí¼þ°ü·ÖÎö£©³Ðµ£µ¥Î»
+* @copyright æ³¨é‡Šæ·»åŠ å•ä½ï¼šæ¸…åŽå¤§å­¦â€”â€”03ä»»åŠ¡ï¼ˆLinuxå†…æ ¸ç›¸å…³é€šç”¨åŸºç¡€è½¯ä»¶åŒ…åˆ†æžï¼‰æ‰¿æ‹…å•ä½
 *
-* @author ×¢ÊÍÌí¼ÓÈËÔ±£ºÐ»ÎÄÑ§
+* @author æ³¨é‡Šæ·»åŠ äººå‘˜ï¼šè°¢æ–‡å­¦
 *
-* @date ×¢ÊÍÌí¼ÓÈÕÆÚ£º2013Äê6ÔÂ8ÈÕ
+* @date æ³¨é‡Šæ·»åŠ æ—¥æœŸï¼š2013å¹´6æœˆ8æ—¥
 *
-* @brief °´Ãû×ÖË³ÐòºÍÓÅÏÈ¼¶Ë³Ðò½«ÃüÁî¼ÓÈëÃüÁîÁÐ±í¡£
+* @brief æŒ‰åå­—é¡ºåºå’Œä¼˜å…ˆçº§é¡ºåºå°†å‘½ä»¤åŠ å…¥å‘½ä»¤åˆ—è¡¨ã€‚
 *
-* @note ×¢ÊÍÏêÏ¸ÄÚÈÝ: 
+* @note æ³¨é‡Šè¯¦ç»†å†…å®¹:
 *
-* ±¾º¯ÊýÊµÏÖ°´Ãû×ÖË³ÐòºÍÓÅÏÈ¼¶Ë³Ðò½«ÃüÁî¼ÓÈëÃüÁîÁÐ±íµÄ¹¦ÄÜ¡£
+* æœ¬å‡½æ•°å®žçŽ°æŒ‰åå­—é¡ºåºå’Œä¼˜å…ˆçº§é¡ºåºå°†å‘½ä»¤åŠ å…¥å‘½ä»¤åˆ—è¡¨çš„åŠŸèƒ½ã€‚
 *
-* ¸Ãº¯ÊýÉ¨Ãègrub_command_list£¬°´ÕÕÃüÁîÃû×ÖË³Ðò²åÈë¸ÃÁ´±í£»Èç¹û·¢ÏÖÏàÍ¬Ãû×ÖµÄ
-* ÃüÁî£¬ÇÒÈç¹ûº¯ÊýÖ¸¶¨µÄÕâ¸öÐÂÃüÁîµÄÓÅÏÈ¼¶±ÈÒÑÓÐµÄÃüÁîÓÅÏÈ¼¶¸ü¸ß£¬Ôò½«Ô­ÓÐÃüÁî
-* ÉèÎª"²»»î¶¯"(Çå³ýµôGRUB_COMMAND_FLAG_ACTIVEÎ»)²¢ÍË³öÑ­»·£¬È»ºó½«ÐÂÃüÁî²åÈëÔÚ
-* Õâ¸öÍ¬ÃûµÄÃû×ÖÇ°£¬È»ºó½«ÐÂÃüÁîÉèÖÃÎª"»î¶¯"(ÉèÖÃGRUB_COMMAND_FLAG_ACTIVE)¡£
+* è¯¥å‡½æ•°æ‰«ægrub_command_listï¼ŒæŒ‰ç…§å‘½ä»¤åå­—é¡ºåºæ’å…¥è¯¥é“¾è¡¨ï¼›å¦‚æžœå‘çŽ°ç›¸åŒåå­—çš„
+* å‘½ä»¤ï¼Œä¸”å¦‚æžœå‡½æ•°æŒ‡å®šçš„è¿™ä¸ªæ–°å‘½ä»¤çš„ä¼˜å…ˆçº§æ¯”å·²æœ‰çš„å‘½ä»¤ä¼˜å…ˆçº§æ›´é«˜ï¼Œåˆ™å°†åŽŸæœ‰å‘½ä»¤
+* è®¾ä¸º"ä¸æ´»åŠ¨"(æ¸…é™¤æŽ‰GRUB_COMMAND_FLAG_ACTIVEä½)å¹¶é€€å‡ºå¾ªçŽ¯ï¼Œç„¶åŽå°†æ–°å‘½ä»¤æ’å…¥åœ¨
+* è¿™ä¸ªåŒåçš„åå­—å‰ï¼Œç„¶åŽå°†æ–°å‘½ä»¤è®¾ç½®ä¸º"æ´»åŠ¨"(è®¾ç½®GRUB_COMMAND_FLAG_ACTIVE)ã€‚
 **/
 
 grub_command_t
@@ -66,7 +66,7 @@ grub_register_command_prio (const char *name,
 
   cmd->flags = 0;
   cmd->prio = prio;
-    
+
   for (p = &grub_command_list, q = *p; q; p = &(q->next), q = q->next)
     {
       int r;
@@ -99,23 +99,23 @@ grub_register_command_prio (const char *name,
 }
 
 /**
-* @attention ±¾×¢ÊÍµÃµ½ÁË"ºË¸ß»ù"¿Æ¼¼ÖØ´ó×¨Ïî2012Äê¿ÎÌâ¡°¿ªÔ´²Ù×÷ÏµÍ³ÄÚºË·ÖÎöºÍ°²È«ÐÔÆÀ¹À
-*£¨¿ÎÌâ±àºÅ£º2012ZX01039-004£©¡±µÄ×ÊÖú¡£
+* @attention æœ¬æ³¨é‡Šå¾—åˆ°äº†"æ ¸é«˜åŸº"ç§‘æŠ€é‡å¤§ä¸“é¡¹2012å¹´è¯¾é¢˜â€œå¼€æºæ“ä½œç³»ç»Ÿå†…æ ¸åˆ†æžå’Œå®‰å…¨æ€§è¯„ä¼°
+*ï¼ˆè¯¾é¢˜ç¼–å·ï¼š2012ZX01039-004ï¼‰â€çš„èµ„åŠ©ã€‚
 *
-* @copyright ×¢ÊÍÌí¼Óµ¥Î»£ºÇå»ª´óÑ§¡ª¡ª03ÈÎÎñ£¨LinuxÄÚºËÏà¹ØÍ¨ÓÃ»ù´¡Èí¼þ°ü·ÖÎö£©³Ðµ£µ¥Î»
+* @copyright æ³¨é‡Šæ·»åŠ å•ä½ï¼šæ¸…åŽå¤§å­¦â€”â€”03ä»»åŠ¡ï¼ˆLinuxå†…æ ¸ç›¸å…³é€šç”¨åŸºç¡€è½¯ä»¶åŒ…åˆ†æžï¼‰æ‰¿æ‹…å•ä½
 *
-* @author ×¢ÊÍÌí¼ÓÈËÔ±£ºÐ»ÎÄÑ§
+* @author æ³¨é‡Šæ·»åŠ äººå‘˜ï¼šè°¢æ–‡å­¦
 *
-* @date ×¢ÊÍÌí¼ÓÈÕÆÚ£º2013Äê6ÔÂ8ÈÕ
+* @date æ³¨é‡Šæ·»åŠ æ—¥æœŸï¼š2013å¹´6æœˆ8æ—¥
 *
-* @brief È¡Ïû×¢²áÒ»¸öÃüÁî¡£
+* @brief å–æ¶ˆæ³¨å†Œä¸€ä¸ªå‘½ä»¤ã€‚
 *
-* @note ×¢ÊÍÏêÏ¸ÄÚÈÝ: 
+* @note æ³¨é‡Šè¯¦ç»†å†…å®¹:
 *
-* ±¾º¯ÊýÊµÏÖÈ¡Ïû×¢²áÒ»¸öÃüÁîµÄ¹¦ÄÜ¡£
+* æœ¬å‡½æ•°å®žçŽ°å–æ¶ˆæ³¨å†Œä¸€ä¸ªå‘½ä»¤çš„åŠŸèƒ½ã€‚
 *
-* Èç¹û¸ÃÃüÁîµ±Ç°ÊÇ»î¶¯µÄ£¬ÇÒ»¹ÓÐÏÂÒ»¸öÃüÁî£¬ÄÇÃ´½«ÏÂÒ»¸öÃüÁîÉèÎª»î¶¯×´Ì¬£»
-* ½Ó×Å½²¸ÃÃüÁî´ÓÃüÁîÁÐ±íÉ¾³ý£¬²¢ÊÍ·Å¸ÃÃüÁîµÄÄÚ´æ¡£
+* å¦‚æžœè¯¥å‘½ä»¤å½“å‰æ˜¯æ´»åŠ¨çš„ï¼Œä¸”è¿˜æœ‰ä¸‹ä¸€ä¸ªå‘½ä»¤ï¼Œé‚£ä¹ˆå°†ä¸‹ä¸€ä¸ªå‘½ä»¤è®¾ä¸ºæ´»åŠ¨çŠ¶æ€ï¼›
+* æŽ¥ç€è®²è¯¥å‘½ä»¤ä»Žå‘½ä»¤åˆ—è¡¨åˆ é™¤ï¼Œå¹¶é‡Šæ”¾è¯¥å‘½ä»¤çš„å†…å­˜ã€‚
 **/
 
 void
