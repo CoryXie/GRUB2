@@ -59,6 +59,23 @@ grub_disk_cache_get_performance (unsigned long *hits, unsigned long *misses)
 }
 #endif
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 获得对应磁盘设备的扇区在disk cache数组中的索引。
+*
+* @note 注释详细内容:
+*
+* 本函数实现获得对应磁盘设备的扇区在disk cache数组中的索引的功能。实际是使用参数dev_id，
+* disk_id，以及sector按照哈希表方式做映射。
+**/
 static unsigned
 grub_disk_cache_get_index (unsigned long dev_id, unsigned long disk_id,
 			   grub_disk_addr_t sector)
@@ -67,7 +84,24 @@ grub_disk_cache_get_index (unsigned long dev_id, unsigned long disk_id,
 	   + ((unsigned) (sector >> GRUB_DISK_CACHE_BITS)))
 	  % GRUB_DISK_CACHE_NUM);
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 使得对应磁盘设备的扇区的缓存数据在disk cache中无效。
+*
+* @note 注释详细内容:
+*
+* 本函数实现使得对应磁盘设备的扇区的缓存数据在disk cache中无效的功能。通过调用函数
+* grub_disk_cache_get_index()获得在disk cache数组的索引，进而获得对应的cache项，如果
+* 该cache项与参数一致（命中），那么就释放该缓存项，并使得该项数据无效。
+**/
 static void
 grub_disk_cache_invalidate (unsigned long dev_id, unsigned long disk_id,
 			    grub_disk_addr_t sector)
@@ -89,6 +123,23 @@ grub_disk_cache_invalidate (unsigned long dev_id, unsigned long disk_id,
     }
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 使得对应磁盘设备的扇区的缓存数据在disk cache中无效。
+*
+* @note 注释详细内容:
+*
+* 本函数实现使得磁盘设备的扇区的所有缓存数据在disk cache中无效的功能。对总共所有
+* GRUB_DISK_CACHE_NUM项的cache项，就释放该缓存项，并使得该项数据无效。
+**/
 void
 grub_disk_cache_invalidate_all (void)
 {
@@ -105,7 +156,24 @@ grub_disk_cache_invalidate_all (void)
 	}
     }
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 获得对应磁盘设备的扇区在disk cache中的有效缓存数据并锁定该cache项。
+*
+* @note 注释详细内容:
+*
+* 本函数实现获得对应磁盘设备的扇区在disk cache中的有效缓存数据的功能。通过调用函数
+* grub_disk_cache_get_index()获得在disk cache数组的索引，进而获得对应的cache项，如果
+* 该cache项与参数一致（命中），那么就返回该项的有效缓存数据，并锁定该缓存项（lock = 1）。
+**/
 static char *
 grub_disk_cache_fetch (unsigned long dev_id, unsigned long disk_id,
 		       grub_disk_addr_t sector)
@@ -132,7 +200,24 @@ grub_disk_cache_fetch (unsigned long dev_id, unsigned long disk_id,
 
   return 0;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 解除对应磁盘设备的扇区在disk cache中的cache项的锁定。
+*
+* @note 注释详细内容:
+*
+* 本函数实现解除对应磁盘设备的扇区在disk cache中的cache项的锁定的功能。通过调用函数
+* grub_disk_cache_get_index()获得在disk cache数组的索引，进而获得对应的cache项，如果
+* 该cache项与参数一致（命中），那么就解除锁定该缓存项（lock = 0）。
+**/
 static void
 grub_disk_cache_unlock (unsigned long dev_id, unsigned long disk_id,
 			grub_disk_addr_t sector)
@@ -148,6 +233,25 @@ grub_disk_cache_unlock (unsigned long dev_id, unsigned long disk_id,
     cache->lock = 0;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 将对应磁盘设备的扇区的数据存储在disk cache中的cache项。
+*
+* @note 注释详细内容:
+*
+* 本函数实现将对应磁盘设备的扇区的数据存储在disk cache中的cache项的功能。通过调用函数
+* grub_disk_cache_get_index()获得在disk cache数组的索引，进而获得对应的cache项，释放原
+* 有cache项的数据，重新分配新的要存储的数据缓冲区，将数据拷贝进入缓冲区，并更新dev_id，
+* disk_id以及sector等信息。
+**/
 static grub_err_t
 grub_disk_cache_store (unsigned long dev_id, unsigned long disk_id,
 		       grub_disk_addr_t sector, const char *data)
@@ -176,10 +280,25 @@ grub_disk_cache_store (unsigned long dev_id, unsigned long disk_id,
   return GRUB_ERR_NONE;
 }
 
-
-
+/**< 全局磁盘设备列表 */
 grub_disk_dev_t grub_disk_dev_list;
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 注册一个磁盘设备到全局磁盘设备列表中。
+*
+* @note 注释详细内容:
+*
+* 本函数实现注册一个磁盘设备到全局磁盘设备列表中的功能。将这个设备放置在该列表的首项。
+**/
 void
 grub_disk_dev_register (grub_disk_dev_t dev)
 {
@@ -187,6 +306,22 @@ grub_disk_dev_register (grub_disk_dev_t dev)
   grub_disk_dev_list = dev;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 从全局磁盘设备列表中删除一个已经注册的磁盘设备。
+*
+* @note 注释详细内容:
+*
+* 本函数实现从全局磁盘设备列表中删除一个已经注册的磁盘设备的功能。
+**/
 void
 grub_disk_dev_unregister (grub_disk_dev_t dev)
 {
@@ -199,7 +334,22 @@ grub_disk_dev_unregister (grub_disk_dev_t dev)
 	break;
       }
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 查找分区分隔符号（第一个没有用'\'转义的','）的位置。
+*
+* @note 注释详细内容:
+*
+* 本函数实现查找分区分隔符号（第一个没有用'\'转义的','）的位置的功能。返回指向','的指针。
+**/
 /* Return the location of the first ',', if any, which is not
    escaped by a '\'.  */
 static const char *
@@ -217,7 +367,32 @@ find_part_sep (const char *name)
     }
   return NULL;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 按照磁盘名字打开磁盘。
+*
+* @note 注释详细内容:
+*
+* 本函数实现按照磁盘名字打开磁盘的功能。该函数的大致流程如下：
+*
+* 1） 使用grub_zalloc()分配一个grub_disk_t结构（变量disk）；
+* 2） 使用find_part_sep()看对应名字是否指定了磁盘分区，进而决定磁盘的实际名字（变量raw）；
+* 3） 扫描全局磁盘设备列表grub_disk_dev_list，对每个设备，使用raw和disk做参数调用open()；如果
+* 该open成功，则算找到对应设备（从而跳出循环）并且打开了该磁盘设备（保存找到的设备disk->dev）；
+* 如果没有找到设备或者磁盘扇区大小不被支持，那么就错误退出；
+* 4） 如果磁盘设备打开成功，那么看是否还指定了分区，如果又指定了分区，那么就进一步调用函数
+* grub_partition_probe()来打开分区，保存返回的分区结构到disk->partition。
+* 5） 根据上次访问该磁盘设备到当前访问之间的时间间隔，如果超过2秒钟，那么就无效磁盘cache数据。
+* 并更新最后访问该磁盘的时间为本次访问的当前时间。
+**/
 grub_disk_t
 grub_disk_open (const char *name)
 {
@@ -319,6 +494,27 @@ grub_disk_open (const char *name)
   return disk;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 关闭已经打开的磁盘设备。
+*
+* @note 注释详细内容:
+*
+* 本函数实现关闭已经打开的磁盘设备的功能。该函数的大致流程如下：
+*
+* 1）首先调用该磁盘设备的close()函数；
+* 2）重置最后访问时间；
+* 3）释放该磁盘的所有分区链表的每一项。
+* 4）释放该grub_disk_t的名字和结构本身。
+**/
 void
 grub_disk_close (grub_disk_t disk)
 {
@@ -340,7 +536,26 @@ grub_disk_close (grub_disk_t disk)
   grub_free ((void *) disk->name);
   grub_free (disk);
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 调整磁盘设备扇区范围。
+*
+* @note 注释详细内容:
+*
+* 本函数实现调整磁盘设备扇区范围的功能。该函数的大致功能如下：
+*
+* 1）将扇区号sector从相对于分区改为相对于磁盘（分区相对磁盘的偏移+扇区相对分区的偏移）；
+* 2）归一化offset使得其小于扇区大小；
+* 3）验证该范围处于分区当中。
+**/
 /* This function performs three tasks:
    - Make sectors disk relative from partition relative.
    - Normalize offset to be less than the sector size.
@@ -382,12 +597,54 @@ grub_disk_adjust_range (grub_disk_t disk, grub_disk_addr_t *sector,
   return GRUB_ERR_NONE;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 转换磁盘设备扇区编号。
+*
+* @note 注释详细内容:
+*
+* 本函数实现转换磁盘设备扇区编号的功能。从512字节模式扇区编号转换为实际扇区大小模式的扇区
+* 编号。实际使用的是运算”sector >> (disk->log_sector_size - GRUB_DISK_SECTOR_BITS)“；例如，
+* 如果本来磁盘扇区大小实际就是512字节，那么disk->log_sector_size=9，与GRUB_DISK_SECTOR_BITS
+* 一样，因此返回值就是sector本身。而加入磁盘的实际扇区大小是4KB，即disk->log_sector_size=12，
+* 那么返回的值就是（sector>>3），因此，就是原来的山区编号0~7都会是0，原来的8~15都会是1，以
+* 此类推。
+**/
 static inline grub_disk_addr_t
 transform_sector (grub_disk_t disk, grub_disk_addr_t sector)
 {
   return sector >> (disk->log_sector_size - GRUB_DISK_SECTOR_BITS);
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 读取较小的磁盘扇区数据（小于cache size并且不越过cache项边界）。
+*
+* @note 注释详细内容:
+*
+* 本函数实现读取较小的磁盘扇区数据（小于cache size并且不越过cache项边界）的功能。大致
+* 步骤如下：
+*
+* 1）首先调用grub_disk_cache_fetch()，如果命中，那么直接返回缓存的数据。
+* 2）如果不命中，那么尝试直接实际读取cahce块大小的数据，并将之存储到缓存；
+* 3）如果读取cache块大小数据也失败了，那么再次尝试读取请求的实际大小。
+**/
 /* Small read (less than cache size and not pass across cache unit boundaries).
    sector is already adjusted and is divisible by cache unit size.
  */
@@ -415,7 +672,7 @@ grub_disk_read_small (grub_disk_t disk, grub_disk_addr_t sector,
 
   /* Otherwise read data from the disk actually.  */
   if (disk->total_sectors == GRUB_DISK_SIZE_UNKNOWN
-      || sector + GRUB_DISK_CACHE_SIZE
+      || sector + GRUB_DISK_CACHE_SIZE/**< 读取一个cache块不会超过磁盘总大小末尾 */
       < (disk->total_sectors << (disk->log_sector_size - GRUB_DISK_SECTOR_BITS)))
     {
       grub_err_t err;
@@ -442,7 +699,7 @@ grub_disk_read_small (grub_disk_t disk, grub_disk_addr_t sector,
     unsigned num;
     grub_disk_addr_t aligned_sector;
 
-    sector += (offset >> GRUB_DISK_SECTOR_BITS);
+    sector += (offset >> GRUB_DISK_SECTOR_BITS);/**< 归一化磁盘sector和offset */
     offset &= ((1 << GRUB_DISK_SECTOR_BITS) - 1);
     aligned_sector = (sector & ~((1 << (disk->log_sector_size
 					- GRUB_DISK_SECTOR_BITS))
@@ -454,7 +711,7 @@ grub_disk_read_small (grub_disk_t disk, grub_disk_addr_t sector,
     tmp_buf = grub_malloc (num << disk->log_sector_size);
     if (!tmp_buf)
       return grub_errno;
-    
+
     if ((disk->dev->read) (disk, transform_sector (disk, aligned_sector),
 			   num, tmp_buf))
       {
@@ -469,7 +726,30 @@ grub_disk_read_small (grub_disk_t disk, grub_disk_addr_t sector,
     return GRUB_ERR_NONE;
   }
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 读取磁盘扇区数据。
+*
+* @note 注释详细内容:
+*
+* 本函数实现读取磁盘扇区数据的功能。该函数大致步骤如下：
+*
+* 1）首先调用grub_disk_adjust_range()，归一化sector和offset。
+* 2）如果起始扇区sector和偏移offset没有cache块对其，那么将最先部分没有cahce块对其的部分
+* 使用grub_disk_read_small()读取出来；
+* 3）剩余的数据分为两部分，首先对于中间的整数cache块大小的，按照cache块大小读入，并存储
+* 到cache块中。
+* 4）在最后，如果还有不足cache块大小的数据，再次调用grub_disk_read_small()读取出来。
+* 5）调用read hook钩子函数。
+**/
 /* Read data from the disk.  */
 grub_err_t
 grub_disk_read (grub_disk_t disk, grub_disk_addr_t sector,
@@ -559,7 +839,7 @@ grub_disk_read (grub_disk_t disk, grub_disk_addr_t sector,
 				   buf);
 	  if (err)
 	    return err;
-	  
+
 	  for (i = 0; i < agglomerate; i ++)
 	    grub_disk_cache_store (disk->dev->id, disk->id,
 				   sector + (i << GRUB_DISK_CACHE_BITS),
@@ -569,7 +849,7 @@ grub_disk_read (grub_disk_t disk, grub_disk_addr_t sector,
 
 	  sector += agglomerate << GRUB_DISK_CACHE_BITS;
 	  size -= agglomerate << (GRUB_DISK_CACHE_BITS + GRUB_DISK_SECTOR_BITS);
-	  buf = (char *) buf 
+	  buf = (char *) buf
 	    + (agglomerate << (GRUB_DISK_CACHE_BITS + GRUB_DISK_SECTOR_BITS));
 	}
 
@@ -613,6 +893,33 @@ grub_disk_read (grub_disk_t disk, grub_disk_addr_t sector,
   return grub_errno;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 写入磁盘扇区数据。
+*
+* @note 注释详细内容:
+*
+* 本函数实现读取磁盘扇区数据的功能。该函数大致步骤如下：
+*
+* 1）首先调用grub_disk_adjust_range()，归一化sector和offset。
+* 2）计算aligned_sector，将sector对齐到前一个实际扇区大小处；计算real_offset为相对于前面
+* 的aligned_sector的偏移；并将操作的sector设置到aligned_sector。
+* 3）将要写入的数据分成3个部分，按照下面的情况，使用一个循环完成实际的写入：
+* 3.1) 如果开始部分没有与实际扇区大小对应，那么real_offset！= 0，则先调用grub_disk_read()
+* 读入一个实际扇区大小的数据，然后将前面部分要写入的但是又没有与实际扇区大小对齐的部分
+* 合并，然后再将合并后的数据写入；同事无效这部分磁盘cache；
+* 3.2）中间部分，按照整个扇区大小的整数倍，全部写入；对应的磁盘cache也被无效；
+* 3.3) 剩余的部分，如果还有不足实际扇区大小的数据，也按照3.1）的办法，先读入，再合并，
+* 再无效cache，然后再将合并后的数据写入磁盘。
+**/
 grub_err_t
 grub_disk_write (grub_disk_t disk, grub_disk_addr_t sector,
 		 grub_off_t offset, grub_size_t size, const void *buf)
@@ -689,7 +996,23 @@ grub_disk_write (grub_disk_t disk, grub_disk_addr_t sector,
 
   return grub_errno;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 获取磁盘的容量大小。
+*
+* @note 注释详细内容:
+*
+* 本函数实现获取磁盘的容量大小的功能。如果是分区，则调用grub_partition_get_len()；如果磁盘
+* total_sectors已知，则返回实际的磁盘大小；否则返回GRUB_DISK_SIZE_UNKNOWN。
+**/
 grub_uint64_t
 grub_disk_get_size (grub_disk_t disk)
 {

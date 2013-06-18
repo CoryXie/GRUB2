@@ -33,24 +33,24 @@
 /* This is actualy platform-independant but used only on loongson and sparc.  */
 #if defined (GRUB_MACHINE_MIPS_LOONGSON) || defined (GRUB_MACHINE_MIPS_QEMU_MIPS) || defined (GRUB_MACHINE_SPARC64)
 /**
-* @attention ��ע�͵õ���"�˸߻�"�Ƽ��ش�ר��2012����⡰��Դ����ϵͳ�ں˷����Ͱ�ȫ������
-*�������ţ�2012ZX01039-004������������
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
 *
-* @copyright ע�����ӵ�λ���廪��ѧ����03����Linux�ں����ͨ�û����������������е���λ
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
 *
-* @author ע��������Ա��л��ѧ
+* @author 注释添加人员：谢文学
 *
-* @date ע���������ڣ�2013��6��8��
+* @date 注释添加日期：2013年6月8日
 *
-* @brief ���ģ������Ľ�����ַ��
+* @brief 获得模块数组的结束地址。
 *
-* @note ע����ϸ����: 
+* @note 注释详细内容:
 *
-* ������ʵ�ֻ�ȡģ������Ľ�����ַ�Ĺ��ܡ����grub_modbase��δ����ʼ������
-* ֱ�ӷ���grub_modbase����(��ʾû��ģ���������У�������ַ�����ַ��ͬ)����
-* ��grub_modbaseǿ��ת��Ϊgrub_module_info�ṹmodinfo������grub_modbase + 
-* modinfo->size (˵����grub_modbase����ŵ���grub_module_info�ṹ��ÿ������
-* ģ��ʱ�����modinfo->size����Ӧʵ�ʵ�ģ������Ĵ�С)��
+* 本函数实现获取模块数组的结束地址的功能。如果grub_modbase还未被初始化，则
+* 直接返回grub_modbase本身(表示没有模块在数组中，结束地址与基地址相同)；否
+* 则将grub_modbase强制转换为grub_module_info结构modinfo，返回grub_modbase +
+* modinfo->size (说明在grub_modbase处存放的是grub_module_info结构，每次添加
+* 模块时会更改modinfo->size来反应实际的模块数组的大小)。
 **/
 grub_addr_t
 grub_modules_get_end (void)
@@ -68,22 +68,22 @@ grub_modules_get_end (void)
 #endif
 
 /**
-* @attention ��ע�͵õ���"�˸߻�"�Ƽ��ش�ר��2012����⡰��Դ����ϵͳ�ں˷����Ͱ�ȫ������
-*�������ţ�2012ZX01039-004������������
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
 *
-* @copyright ע�����ӵ�λ���廪��ѧ����03����Linux�ں����ͨ�û����������������е���λ
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
 *
-* @author ע��������Ա��л��ѧ
+* @author 注释添加人员：谢文学
 *
-* @date ע���������ڣ�2013��6��8��
+* @date 注释添加日期：2013年6月8日
 *
-* @brief ����GRUB2���ĵ�����ELFģ�顣
+* @brief 加载GRUB2核心的所有ELF模块。
 *
-* @note ע����ϸ����: 
+* @note 注释详细内容:
 *
-* ������ʵ�ּ���GRUB2���ĵ�����ELFģ��Ĺ��ܡ�����FOR_MODULES����ÿ��ģ��,���
-* ��ģ����OBJ_TYPE_ELF���͵ģ��͵���grub_dl_load_core()��ʵ�ʼ��أ���������ʹ�
-* ӡ������Ϣ��
+* 本函数实现加载GRUB2核心的所有ELF模块的功能。调用FOR_MODULES，对每个模块,如果
+* 该模块是OBJ_TYPE_ELF类型的，就调用grub_dl_load_core()来实际加载，如果出错就打
+* 印错误消息。
 **/
 
 /* Load all modules in core.  */
@@ -107,22 +107,22 @@ grub_load_modules (void)
 }
 
 /**
-* @attention ��ע�͵õ���"�˸߻�"�Ƽ��ش�ר��2012����⡰��Դ����ϵͳ�ں˷����Ͱ�ȫ������
-*�������ţ�2012ZX01039-004������������
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
 *
-* @copyright ע�����ӵ�λ���廪��ѧ����03����Linux�ں����ͨ�û����������������е���λ
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
 *
-* @author ע��������Ա��л��ѧ
+* @author 注释添加人员：谢文学
 *
-* @date ע���������ڣ�2013��6��8��
+* @date 注释添加日期：2013年6月8日
 *
-* @brief ���ز�ִ��GRUB2���ĵ�����ģ�顣
+* @brief 加载并执行GRUB2核心的配置模块。
 *
-* @note ע����ϸ����: 
+* @note 注释详细内容:
 *
-* ������ʵ�ּ���GRUB2���ĵ���������ģ��Ĺ��ܡ�����FOR_MODULES���ҵ���һ������
-* ��OBJ_TYPE_CONFIG���͵�ģ�飬������grub_parser_execute()��ʵ�ʽ������ò�ִ��
-* ��������Ȼ���˳���
+* 本函数实现加载GRUB2核心的所有配置模块的功能。调用FOR_MODULES，找到第一个类型
+* 是OBJ_TYPE_CONFIG类型的模块，并调用grub_parser_execute()来实际解析配置并执行
+* 里面的命令，然后退出。
 **/
 static void
 grub_load_config (void)
@@ -133,7 +133,7 @@ grub_load_config (void)
     /* Not an embedded config, skip.  */
     if (header->type != OBJ_TYPE_CONFIG)
       continue;
-    
+
     grub_parser_execute ((char *) header +
 			 sizeof (struct grub_module_header));
     break;
@@ -141,21 +141,21 @@ grub_load_config (void)
 }
 
 /**
-* @attention ��ע�͵õ���"�˸߻�"�Ƽ��ش�ר��2012����⡰��Դ����ϵͳ�ں˷����Ͱ�ȫ������
-*�������ţ�2012ZX01039-004������������
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
 *
-* @copyright ע�����ӵ�λ���廪��ѧ����03����Linux�ں����ͨ�û����������������е���λ
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
 *
-* @author ע��������Ա��л��ѧ
+* @author 注释添加人员：谢文学
 *
-* @date ע���������ڣ�2013��6��8��
+* @date 注释添加日期：2013年6月8日
 *
-* @brief ɾ�����Ʋ���������(������ڵĻ�)��
+* @brief 删除包绕参数的括号(如果存在的话)。
 *
-* @note ע����ϸ����: 
+* @note 注释详细内容:
 *
-* ������ʵ��ɾ�����Ʋ���val���ߵ����ŵĹ��ܡ��ú�����Ϊ������������д����
-* (Write hook)��
+* 本函数实现删除包绕参数val两边的括号的功能。该函数作为根环境变量的写钩子
+* (Write hook)。
 **/
 
 /* Write hook for the environment variables of root. Remove surrounding
@@ -174,20 +174,20 @@ grub_env_write_root (struct grub_env_var *var __attribute__ ((unused)),
 }
 
 /**
-* @attention ��ע�͵õ���"�˸߻�"�Ƽ��ش�ר��2012����⡰��Դ����ϵͳ�ں˷����Ͱ�ȫ������
-*�������ţ�2012ZX01039-004������������
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
 *
-* @copyright ע�����ӵ�λ���廪��ѧ����03����Linux�ں����ͨ�û����������������е���λ
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
 *
-* @author ע��������Ա��л��ѧ
+* @author 注释添加人员：谢文学
 *
-* @date ע���������ڣ�2013��6��8��
+* @date 注释添加日期：2013年6月8日
 *
-* @brief ����GRUB2��prefix��root����������
+* @brief 设置GRUB2的prefix和root环境变量。
 *
-* @note ע����ϸ����: 
+* @note 注释详细内容:
 *
-* ������ʵ������GRUB2��prefix��root���������Ĺ��ܡ�
+* 本函数实现设置GRUB2的prefix和root环境变量的功能。
 **/
 
 static void
@@ -266,7 +266,7 @@ grub_set_prefix_and_root (void)
   if (device)
     {
       char *prefix_set;
-    
+
       prefix_set = grub_xasprintf ("(%s)%s", device, path ? : "");
       if (prefix_set)
 	{
@@ -296,120 +296,120 @@ grub_load_normal_mode (void)
 }
 
 /**
-* @attention ��ע�͵õ���"�˸߻�"�Ƽ��ش�ר��2012����⡰��Դ����ϵͳ�ں˷����Ͱ�ȫ������
-*�������ţ�2012ZX01039-004������������
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
 *
-* @copyright ע�����ӵ�λ���廪��ѧ����03����Linux�ں����ͨ�û����������������е���λ
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
 *
-* @author ע��������Ա��л��ѧ
+* @author 注释添加人员：谢文学
 *
-* @date ע���������ڣ�2013��6��8��
+* @date 注释添加日期：2013年6月8日
 *
-* @brief GRUB2����������ڡ�
+* @brief GRUB2的主函数入口。
 *
-* @note ע����ϸ����:
+* @note 注释详细内容:
 *
-* grub_main()��GRUB2�ĺ��Ĺ���ѭ���������Ըú���ѭ���ķ��������Եó�GRUB�ĺ���
-* �����ܹ���
-* 
-* 1) ע�ᵼ������
-*    
-*    grub_register_exported_symbols() ����ͨ��gensymlist.sh�ű���Ԥ�����׶�ɨ��
-*    ����ͷ�ļ����ҳ�����ΪEXPORT_FUNC����EXPORT_VAR�ĺ������߱���������һ����
-*    ���ķ��ű����顣Ȼ��Ը������ÿ�����grub_dl_register_symbol()����ע�ᡣ
-*    grub_dl_register_symbol()ͨ���Է������ֽ���hash���������÷���ӳ�䵽
-*    grub_symtab[]����Ķ�Ӧ���С�
+* grub_main()是GRUB2的核心工作循环，经过对该核心循环的分析，可以得出GRUB的核心
+* 软件架构。下面是该函数主要的工作流程描述。
 *
-* 2) ���غ���ģ��
-* 
-*    ���ڳ�ʼ�����̶Ե����׶ν�ѹ�������У�ʵ�����Ѿ���GRUB kernel�͸�ģ�鶼��
-*    ѹ����GRUB_MEMORY_MACHINE_DECOMPRESSION_ADDR ��ʼ����Ҳ����0x100000������
-*    kernel�����Ѿ������ƻ������ӵ�ַ0x9000��������ģ�鲿�ֻ���ԭ������ѹ����
-*    �ط���grub_load_modules() �������Ǵ�ģ�鲿�ּ��ظ�ģ�顣�ò�����Ҫ��ͨ��
-*    FOR_MODULES��ɨ�����е�ģ��ͷ����ͨ��grub_dl_load_core()������ʵ��ģ���ʵ
-*    �ʼ��ء�����֮������ģ��ĳ�ʼ������������ģ�����ӽ���������
+* 1) 注册导出符号
 *
-* 3) ע���������
+*    grub_register_exported_symbols() 函数通过gensymlist.sh脚本在预处理阶段扫描
+*    各个头文件，找出被标为EXPORT_FUNC或者EXPORT_VAR的函数或者变量，生成一个导
+*    出的符号表数组。然后对该数组的每项都调用grub_dl_register_symbol()进行注册。
+*    grub_dl_register_symbol()通过对符号名字进行hash处理，将该符号映射到
+*    grub_symtab[]数组的对应项中。
 *
-*    grub_register_core_commands()����grub_register_command()�ֱ�ע�����¼�����
-*    ������: 
+* 2) 加载核心模块
 *
-*    - ����	        ����	            ��������
+*    当在初始化过程对第三阶段解压缩过程中，实际上已经将GRUB kernel和各模块都解
+*    压缩到GRUB_MEMORY_MACHINE_DECOMPRESSION_ADDR 开始处，也就是0x100000处，而
+*    kernel部分已经被复制回其链接地址0x9000处，但是模块部分还在原来被解压缩的
+*    地方。grub_load_modules() 函数就是从模块部分加载各模块。该部分主要是通过
+*    FOR_MODULES宏扫描所有的模块头，并通过grub_dl_load_core()函数来实现模块的实
+*    际加载。加载之后会调用模块的初始化函数，并将模块连接进入链表。
 *
-*    - set	        ���û�������ֵ	    grub_core_cmd_set()
-*    - unset	    ɾ����������	    grub_core_cmd_unset()
-*    - ls	        �г��豸�����ļ�	grub_core_cmd_ls()
-*    - insmod	    ����ģ��	        grub_core_cmd_insmod()
+* 3) 注册核心命令
 *
-*    grub_register_command()ʵ���ϵ��õ���grub_register_command_prio()��������
-*    ���뵽grub_command_list�б��С�
+*    grub_register_core_commands()函数调用grub_register_command()分别注册如下几个
+*    核心命令:
 *
-* 4) ������Ƕ����
+*    - 命令	        功能	            处理函数
 *
-*    grub_load_config()������ģ������ÿ������OBJ_TYPE_CONFIG���͵�ģ����ú���
-*    grub_parser_execute()��ɨ�������ģ���ڵ�ÿһ�У��������У��ҵ���Ӧ���
-*    ��ִ����������Щ����ģ����Ƕ�뵽ģ�����ڵĶ�GRUB�ĳ�ʼ�����á�
+*    - set	        设置环境变量值	    grub_core_cmd_set()
+*    - unset	    删除环境变量	    grub_core_cmd_unset()
+*    - ls	        列出设备或者文件	grub_core_cmd_ls()
+*    - insmod	    插入模块	        grub_core_cmd_insmod()
 *
-* 5) ִ�г���ģʽ
+*    grub_register_command()实际上调用的是grub_register_command_prio()，将命令按照
+*    优先级加入到grub_command_list列表中。
 *
-*    grub_load_normal_mode()ͨ������grub_dl_load()������Ϊ"normal"��ģ�飬��ͨ
-*    ��grub_command_execute()���и�ģ�顣
+* 4) 加载内嵌配置
 *
-*    ���У�grub_dl_load()��������ͨ��grub_dl_get()�鿴�Ƿ��ж�Ӧ���ֵ�ģ���Ѿ�
-*    �����ص�����grub_dl_headΪ�׵�ģ�������У�����еĻ�����ֱ�ӷ��ظ�ģ�顣
-*    ����grub_dl_load()��������GRUB�İ�װĿ¼��libĿ¼(grub_dl_dir)�¶�Ӧ
-*    CPUƽ̨��GRUB_TARGET_CPU�Լ�GRUB_PLATFORM��Ŀ¼�£�Ѱ�Ҷ�Ӧ���ֵ�*.modģ
-*    �飬��ͨ��grub_dl_load_file()����������grub_dl_load_core()��ģ����ؽ���
-*    grub_dl_headΪ�׵�ģ�������С�
+*    grub_load_config()函数对模块组内每个属于OBJ_TYPE_CONFIG类型的模块调用函数
+*    grub_parser_execute()，扫描该配置模块内的每一行，解析该行，找到对应命令，
+*    并执行相关命令。这些配置模块是嵌入到模块组内的对GRUB的初始化配置。
 *
-*    ��grub_command_execute()����ͨ��grub_command_find()��grub_command_list��
-*    ���ϲ��Ҷ�Ӧ������ҵ������ִ��֮��
+* 5) 执行常规模式
 *
-*    ��ˣ������������Ϊ"normal"��ģ���ִ�У�����֮ǰ��û���������ģ�飬��
-*    �˱ض����ȴ�CPUƽ̨������lib/i386-pc/������ȥѰ��normal.mod��Ȼ����ؽ���
-*    grub_dl_head��������ִ�и�ģ��ĳ�ʼ��������"normal"ģ����GRUB�ĵ�һ��ִ��
-*    ��ģ�飬������ģ�鶼���������������±���һ������ִ�С�"normal"ģ��Դ����λ
-*    ��grub-core/normalĿ¼�£��۲��Ŀ¼�µ��ļ������Է�����grub-core/normal/main.c��
-*    ����"normal"ģ�飬���ʼ���������Ǹ��ļ��е�GRUB_MOD_INIT(normal)����Ӧ��
-*    ������
+*    grub_load_normal_mode()通过调用grub_dl_load()加载名为"normal"的模块，并通
+*    过grub_command_execute()运行该模块。
 *
-*    GRUB_MOD_INIT(normal)����Ӧ�ĺ�����ִ��һЩ�ؼ��������������grub_dl_load()
-*    ���ع��õ�"gzio"ģ�飬����һЩ�Ӻ���ע�����йؼ����
+*    其中，grub_dl_load()函数首先通过grub_dl_get()查看是否有对应名字的模块已经
+*    被加载到了以grub_dl_head为首的模块链表中，如果有的话，则直接返回该模块。
+*    否则，grub_dl_load()函数就在GRUB的安装目录的lib目录(grub_dl_dir)下对应
+*    CPU平台（GRUB_TARGET_CPU以及GRUB_PLATFORM）目录下，寻找对应名字的*.mod模
+*    块，并通过grub_dl_load_file()，进而调用grub_dl_load_core()将模块加载进入
+*    grub_dl_head为首的模块链表中。
 *
-*    - ����	            ����	                        ��������
+*    而grub_command_execute()则是通过grub_command_find()在grub_command_list列
+*    表上查找对应命令，若找到命令，则执行之。
 *
-*    - authenticate	    ����û��Ƿ���USERLIST֮��	    grub_cmd_authenticate ()
-*    - export	        ��������	                    grub_cmd_export ()
-*    - break	        ����ѭ��	                    grub_script_break ()
-*    - continue	        ����ѭ��	                    grub_script_break ()
-*    - shift	        �ƶ���λ������$0, $1, $2, ...��	grub_script_shift()
-*    - setparams	    ���ö�λ����	                grub_script_setparams()
-*    - return	        ��һ����������(��bash����һ��)  grub_script_return()
-*    - menuentry	    ����һ���˵���	                grub_cmd_menuentry()
-*    - submenu	        ����һ���Ӳ˵�	                grub_cmd_menuentry()
-*    - clear	        ����Ļ	                        grub_mini_cmd_clear()
-*    - normal	        ����normalģʽ	                grub_cmd_normal()
-*    - normal_exit	    �˳�normalģʽ	                grub_cmd_normal_exit()
+*    因此，对于这里的名为"normal"的模块的执行，由于之前并没有载入过该模块，因
+*    此必定是先从CPU平台（例如lib/i386-pc/）下面去寻找normal.mod，然后加载进入
+*    grub_dl_head链表，并执行该模块的初始化函数。"normal"模块是GRUB的第一个执行
+*    的模块，其他的模块都可以在它的引导下被进一步载入执行。"normal"模块源代码位
+*    于grub-core/normal目录下，观察该目录下的文件，发现有grub-core/normal/main.c，
+*    对于"normal"模块，其初始化函数就是该文件中的GRUB_MOD_INIT(normal)所对应的
+*    函数。
 *
-*    ������normalģ��ĳ�ʼ���������Ѿ�ע����normal��������grub_command_execute()
-*    ʱ������grub_command_list�б��ϲ��ҵ�������Ӷ�ִ��grub_cmd_normal()������
-*    ����������У������ҵ�һ�������ļ�������grub.cfg��֮����ú���
-*    grub_enter_normal_mode()������GRUB�ĳ���ģʽ��
+*    GRUB_MOD_INIT(normal)所对应的函数会执行一些关键动作，例如调用grub_dl_load()
+*    加载公用的"gzio"模块，再调用一些子函数注册下列关键命令：
 *
-*    grub_cmd_normal()�����᳢�Զ��벢ִ�������ļ�(���簲װĿ¼�µ�grub.cfg)��
-*    �������û���������ʱ���õ����÷�ʽ���������ָ��Ҫ�����Ĳ���ϵͳ�Ĳ˵�����
-*    ��ѡ��������һ����
+*    - 命令	            功能	                        处理函数
 *
-*    ���Ž���grub_cmdline_run()������һ��while (1)ѭ������ȡ�û����룬���Ͳ�ִ��
-*   ��ͨ��grub_script_execute()������ѭ��ֱ���û�����normal_exit�����ͨ��
-*    grub_cmd_normal_exit()������
+*    - authenticate	    检查用户是否在USERLIST之中	    grub_cmd_authenticate ()
+*    - export	        导出变量	                    grub_cmd_export ()
+*    - break	        跳出循环	                    grub_script_break ()
+*    - continue	        继续循环	                    grub_script_break ()
+*    - shift	        移动定位参数（$0, $1, $2, ...）grub_script_shift()
+*    - setparams	    设置定位参数	                grub_script_setparams()
+*    - return	        从一个函数返回(与bash语义一致) grub_script_return()
+*    - menuentry	    定义一个菜单项	                grub_cmd_menuentry()
+*    - submenu	        定义一个子菜单	                grub_cmd_menuentry()
+*    - clear	        清屏幕	                        grub_mini_cmd_clear()
+*    - normal	        进入normal模式	                grub_cmd_normal()
+*    - normal_exit	    退出normal模式	                grub_cmd_normal_exit()
 *
-* 6) �����Ԯģʽ
+*    由于在normal模块的初始化过程中已经注册了normal命令，因此在grub_command_execute()
+*    时就能在grub_command_list列表上查找到该命令，从而执行grub_cmd_normal()函数，
+*    在这个函数中，尝试找到一个配置文件，例如grub.cfg，之后调用函数
+*    grub_enter_normal_mode()，进入GRUB的常规模式。
 *
-*    ���ǰһ����"normal"��ģ��ִ���˳�����GRUB�����Ԯģʽ(rescue mode)����ִ
-*    �к���grub_rescue_run()���ú���ʽ��while(1)ѭ�����������϶�ȡ�û���������
-*    �룬���������ִ��֮�����ж��û�����������������ͨ��grub_command_find()
-*    ��ɵġ��ú�����Զ���᷵�أ����GRUBҲ�Ͳ��᷵�ء�
+*    grub_cmd_normal()函数会尝试读入并执行配置文件(例如安装目录下的grub.cfg)。
+*    这里是用户正常启动时常用的配置方式，例如可以指定要启动的操作系统的菜单，可
+*    以选择启动哪一个。
+*
+*    接着进入grub_cmdline_run()，这是一个while (1)循环，读取用户输入，解释并执行
+*   （通过grub_script_execute()）。该循环直到用户输入normal_exit命令才通过
+*    grub_cmd_normal_exit()结束。
+*
+* 6) 进入救援模式
+*
+*    如果前一步的"normal"的模块执行退出，则GRUB进入救援模式(rescue mode)，即执
+*    行函数grub_rescue_run()。该函数是个while(1)循环函数，不断读取用户命令行输
+*    入，解析命令，并执行之。其中对用户输入的命令解析都是通过grub_command_find()
+*    完成的。该函数永远不会返回，因此GRUB也就不会返回。
 **/
 
 /* The main routine.  */
@@ -428,7 +428,7 @@ grub_main (void)
   grub_register_exported_symbols ();
 #ifdef GRUB_LINKER_HAVE_INIT
   grub_arch_dl_init_linker ();
-#endif  
+#endif
   grub_load_modules ();
 
   /* It is better to set the root device as soon as possible,
