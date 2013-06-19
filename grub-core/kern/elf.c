@@ -566,11 +566,11 @@ grub_elf64_phdr_iterate (grub_elf_t elf,
 *
 * @date 注释添加日期：2013年6月8日
 *
-* @brief 计算32位ELF文件的所有段占用的大小。
+* @brief 计算64位ELF文件的所有段占用的大小。
 *
 * @note 注释详细内容:
 *
-* 本函数实现计算32位ELF文件的所有段占用的大小的功能。使用grub_elf32_phdr_iterate()枚举每个
+* 本函数实现计算64位ELF文件的所有段占用的大小的功能。使用grub_elf64_phdr_iterate()枚举每个
 * 程序头，回调内嵌函数calcsize()来统计所有段占据的总体内存大小。
 **/
 /* Calculate the amount of memory spanned by the segments.  */
