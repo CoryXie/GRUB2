@@ -28,6 +28,23 @@ static struct grub_env_context initial_context;
 /* The current context.  */
 struct grub_env_context *grub_current_context = &initial_context;
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 获得一个环境变量名字字符串的hash表示。
+*
+* @note 注释详细内容:
+*
+* 本函数实现获得一个环境变量名字字符串的hash表示的功能。返回的键值可以作为环境变量hash
+* table的索引。
+**/
 /* Return the hash representation of the string S.  */
 static unsigned int
 grub_env_hashval (const char *s)
@@ -40,7 +57,24 @@ grub_env_hashval (const char *s)
 
   return i % HASHSZ;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 查找一个环境变量。
+*
+* @note 注释详细内容:
+*
+* 本函数实现查找一个环境变量的功能。首先使用grub_env_hashval()获得环境变量名称的hash键值；
+* 之后使用该键值作为环境变量hash table的索引，找到grub_env_var类型的链表头；接着再循环对
+* 比每个表项与name是否一样，如果一样表示找到该环境变量，并返回。
+**/
 static struct grub_env_var *
 grub_env_find (const char *name)
 {
@@ -55,6 +89,23 @@ grub_env_find (const char *name)
   return 0;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 插入一个环境变量。
+*
+* @note 注释详细内容:
+*
+* 本函数实现插入一个环境变量的功能。首先使用grub_env_hashval()返回hash键值；然后将这个环
+* 境变量添加到键值索引的hash table的头部。
+**/
 static void
 grub_env_insert (struct grub_env_context *context,
 		 struct grub_env_var *var)
@@ -68,7 +119,22 @@ grub_env_insert (struct grub_env_context *context,
     var->next->prevp = &(var->next);
   context->vars[idx] = var;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 删除一个环境变量。
+*
+* @note 注释详细内容:
+*
+* 本函数实现删除一个环境变量的功能。将这个环境变量从hash table的链表中脱下来。
+**/
 static void
 grub_env_remove (struct grub_env_var *var)
 {
@@ -77,7 +143,24 @@ grub_env_remove (struct grub_env_var *var)
   if (var->next)
     var->next->prevp = var->prevp;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 设置一个环境变量的值。
+*
+* @note 注释详细内容:
+*
+* 本函数实现设置一个环境变量的值的功能。首先调用grub_env_find()找到该环境变量；如果找到
+* 就将该环境变量更新成新的值并返回；如果没找到，则分配一个新的环境变量，将其插入当前的
+* 环境变量hash table中。
+**/
 grub_err_t
 grub_env_set (const char *name, const char *val)
 {
@@ -129,6 +212,23 @@ grub_env_set (const char *name, const char *val)
   return grub_errno;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 获得一个环境变量的值。
+*
+* @note 注释详细内容:
+*
+* 本函数实现获得一个环境变量的值的功能。首先使用grub_env_find()找到该环境变量，然后调用
+* 该环境变量的read_hook函数钩子；最后返回var->value作为环境变量的值。
+**/
 const char *
 grub_env_get (const char *name)
 {
@@ -143,7 +243,24 @@ grub_env_get (const char *name)
 
   return var->value;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 取消一个环境变量。
+*
+* @note 注释详细内容:
+*
+* 本函数实现取消一个环境变量的功能。首先调用grub_env_find()找到该环境变量；如果找到
+* 就将该环境变量，并且有var->read_hook || var->write_hook，那么就将该环境变量更新成""
+* 并返回；否则就删除该环境变量并释放对应资源。
+**/
 void
 grub_env_unset (const char *name)
 {
@@ -165,7 +282,23 @@ grub_env_unset (const char *name)
   grub_free (var->value);
   grub_free (var);
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 遍历所有的环境变量并调用回调函数。
+*
+* @note 注释详细内容:
+*
+* 本函数实现遍历所有的环境变量并调用回调函数的功能。首先将所有的环境变量添加到一个内部
+* 的排序链表上，然后循序对这个排序链表调用回调函数，然后释放该排序链表。
+**/
 void
 grub_env_iterate (int (*func) (struct grub_env_var *var))
 {
@@ -216,6 +349,24 @@ grub_env_iterate (int (*func) (struct grub_env_var *var))
     }
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 注册环境变量的读写钩子函数。
+*
+* @note 注释详细内容:
+*
+* 本函数实现注册环境变量的读写钩子函数的功能。首先使用grub_env_find()找到该环境变量；
+* 如果没找到就将之设置为""并再次使用grub_env_find()找到该环境变量；最后设置read_hook
+* 和write_hook。
+**/
 grub_err_t
 grub_register_variable_hook (const char *name,
 			     grub_env_read_hook_t read_hook,
@@ -238,6 +389,24 @@ grub_register_variable_hook (const char *name,
   return GRUB_ERR_NONE;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 导出一个环境变量。
+*
+* @note 注释详细内容:
+*
+* 本函数实现导出一个环境变量的功能。首先使用grub_env_find()找到该环境变量；如果没找到，则
+* 使用grub_env_set()将其设置为“”，并重新使用grub_env_find()找到该环境变量；最后设置改环境
+* 变量的global标志位1。
+**/
 grub_err_t
 grub_env_export (const char *name)
 {
@@ -247,12 +416,12 @@ grub_env_export (const char *name)
   if (! var)
     {
       grub_err_t err;
-      
+
       err = grub_env_set (name, "");
       if (err)
 	return err;
       var = grub_env_find (name);
-    }    
+    }
   var->global = 1;
 
   return GRUB_ERR_NONE;
