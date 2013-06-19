@@ -28,6 +28,23 @@
 
 GRUB_MOD_LICENSE ("GPLv3+");
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 检查是否为合法的ELF文件头。
+*
+* @note 注释详细内容:
+*
+* 本函数实现检查是否为合法的ELF文件头的功能。检查e->e_ident[]对应的魔数以及e->e_version是
+* 否合法。
+**/
 /* Check if EHDR is a valid ELF header.  */
 static grub_err_t
 grub_elf_check_header (grub_elf_t elf)
@@ -45,6 +62,23 @@ grub_elf_check_header (grub_elf_t elf)
   return GRUB_ERR_NONE;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 关闭一个ELF文件。
+*
+* @note 注释详细内容:
+*
+* 本函数实现关闭一个ELF文件的功能。释放对应的elf->phdrs和elf本身，并且调用grub_file_close()
+* 关闭文件本身。
+**/
 grub_err_t
 grub_elf_close (grub_elf_t elf)
 {
@@ -59,6 +93,25 @@ grub_elf_close (grub_elf_t elf)
   return grub_errno;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 检查一个已经打开的文件是否是ELF文件。
+*
+* @note 注释详细内容:
+*
+* 本函数实现检查一个已经打开的文件是否是ELF文件的功能。首先分配一个grub_elf_t格式的数据
+* 结构；接着使用grub_file_seek()将文件偏移量定位到0；然后使用grub_file_read()读入ehdr大小
+* 的数据（ELF头部的大小），然后使用grub_elf_check_header()校验该头部数据是否符合ELF规范。
+* 如果是ELF文件，则返回刚才分配的grub_elf_t结构体。
+**/
 grub_elf_t
 grub_elf_file (grub_file_t file, const char *filename)
 {
@@ -93,6 +146,24 @@ fail:
   return 0;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 打开文件并验证是否是ELF文件（并返回grub_elf_t结构）。
+*
+* @note 注释详细内容:
+*
+* 本函数实现打开文件并验证是否是ELF文件（并返回grub_elf_t结构）的功能。先用grub_file_open()
+* 打开文件，并使用grub_elf_file()验证该文件是否是ELF文件；如不是ELF文件则用grub_file_close()
+* 来关闭文件，否则返回grub_elf_t结构。
+**/
 grub_elf_t
 grub_elf_open (const char *name)
 {
@@ -113,12 +184,46 @@ grub_elf_open (const char *name)
 
 /* 32-bit */
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 判断是否是32位ELF文件。
+*
+* @note 注释详细内容:
+*
+* 本函数实现判断是否是32位ELF文件的功能。比较ehdr.ehdr32.e_ident[EI_CLASS] == ELFCLASS32。
+**/
 int
 grub_elf_is_elf32 (grub_elf_t elf)
 {
   return elf->ehdr.ehdr32.e_ident[EI_CLASS] == ELFCLASS32;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 加载32位ELF文件的程序头。
+*
+* @note 注释详细内容:
+*
+* 本函数实现加载32位ELF文件的程序头的功能。首先获得该文件的程序头的整体大小；然后分配
+* 对应的内存；并用grub_file_seek()将文件定位到ehdr.ehdr32.e_phoff处；再用grub_file_read()
+* 读取对应大小的phdrs。
+**/
 static grub_err_t
 grub_elf32_load_phdrs (grub_elf_t elf, const char *filename)
 {
@@ -146,6 +251,24 @@ grub_elf32_load_phdrs (grub_elf_t elf, const char *filename)
   return GRUB_ERR_NONE;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 枚举32位ELF文件的程序头中的每个程序头项，并调用回调函数。
+*
+* @note 注释详细内容:
+*
+* 本函数实现枚举32位ELF文件的程序头中的每个程序头项，并调用回调函数的功能。首先使用函数
+* grub_elf32_load_phdrs()加载程序头；然后对ehdr.ehdr32.e_phnum个程序头，每个都调用参数给
+* 的hook函数指针。
+**/
 grub_err_t
 grub_elf32_phdr_iterate (grub_elf_t elf,
 			 const char *filename,
@@ -177,6 +300,23 @@ grub_elf32_phdr_iterate (grub_elf_t elf,
   return grub_errno;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 计算32位ELF文件的所有段占用的大小。
+*
+* @note 注释详细内容:
+*
+* 本函数实现计算32位ELF文件的所有段占用的大小的功能。使用grub_elf32_phdr_iterate()枚举每个
+* 程序头，回调内嵌函数calcsize()来统计所有段占据的总体内存大小。
+**/
 /* Calculate the amount of memory spanned by the segments.  */
 grub_size_t
 grub_elf32_size (grub_elf_t elf, const char *filename,
@@ -232,6 +372,23 @@ grub_elf32_size (grub_elf_t elf, const char *filename,
   return segments_end - segments_start;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 加载32位ELF文件的所有可加载段进入内存。
+*
+* @note 注释详细内容:
+*
+* 本函数实现加载32位ELF文件的所有可加载段进入内存的功能。使用grub_elf32_phdr_iterate()枚举每个
+* 程序头，回调内嵌函数grub_elf32_load_segment()来读取所有段占据的内存。
+**/
 /* Load every loadable segment into memory specified by `_load_hook'.  */
 grub_err_t
 grub_elf32_load (grub_elf_t _elf, const char *filename,
@@ -302,7 +459,22 @@ grub_elf32_load (grub_elf_t _elf, const char *filename,
 
 
 /* 64-bit */
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 判断是否是64位ELF文件。
+*
+* @note 注释详细内容:
+*
+* 本函数实现判断是否是64位ELF文件的功能。比较ehdr.ehdr64.e_ident[EI_CLASS] == ELFCLASS64。
+**/
 int
 grub_elf_is_elf64 (grub_elf_t elf)
 {
@@ -335,7 +507,24 @@ grub_elf64_load_phdrs (grub_elf_t elf, const char *filename)
 
   return GRUB_ERR_NONE;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 枚举64位ELF文件的程序头中的每个程序头项，并调用回调函数。
+*
+* @note 注释详细内容:
+*
+* 本函数实现枚举32位ELF文件的程序头中的每个程序头项，并调用回调函数的功能。首先使用函数
+* grub_elf64_load_phdrs()加载程序头；然后对ehdr.ehdr64.e_phnum个程序头，每个都调用参数给
+* 的hook函数指针。
+**/
 grub_err_t
 grub_elf64_phdr_iterate (grub_elf_t elf,
 			 const char *filename,
@@ -367,6 +556,23 @@ grub_elf64_phdr_iterate (grub_elf_t elf,
   return grub_errno;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 计算32位ELF文件的所有段占用的大小。
+*
+* @note 注释详细内容:
+*
+* 本函数实现计算32位ELF文件的所有段占用的大小的功能。使用grub_elf32_phdr_iterate()枚举每个
+* 程序头，回调内嵌函数calcsize()来统计所有段占据的总体内存大小。
+**/
 /* Calculate the amount of memory spanned by the segments.  */
 grub_size_t
 grub_elf64_size (grub_elf_t elf, const char *filename,
@@ -422,6 +628,23 @@ grub_elf64_size (grub_elf_t elf, const char *filename,
   return segments_end - segments_start;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 加载64位ELF文件的所有可加载段进入内存。
+*
+* @note 注释详细内容:
+*
+* 本函数实现加载32位ELF文件的所有可加载段进入内存的功能。使用grub_elf64_phdr_iterate()枚举每个
+* 程序头，回调内嵌函数grub_elf64_load_segment()来读取所有段占据的内存。
+**/
 /* Load every loadable segment into memory specified by `_load_hook'.  */
 grub_err_t
 grub_elf64_load (grub_elf_t _elf, const char *filename,
