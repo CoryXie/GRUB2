@@ -33,6 +33,23 @@ static struct grub_error_saved grub_error_stack_items[GRUB_ERROR_STACK_SIZE];
 static int grub_error_stack_pos;
 static int grub_error_stack_assert;
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 设置全局错误号并格式化错误消息。
+*
+* @note 注释详细内容:
+*
+* 本函数实现设置全局错误号并格式化错误消息的功能。首先将参数n设置给全局错误号grub_errno；
+* 然后使用grub_vsnprintf()格式化输出错误消息。
+**/
 grub_err_t
 grub_error (grub_err_t n, const char *fmt, ...)
 {
@@ -47,6 +64,23 @@ grub_error (grub_err_t n, const char *fmt, ...)
   return n;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 格式化输出错误消息并中止执行。
+*
+* @note 注释详细内容:
+*
+* 本函数实现格式化输出错误消息并中止执行的功能。首先使用grub_vprintf()格式化输出错误消息；
+* 然后调用grub_abort()中止执行。
+**/
 void
 grub_fatal (const char *fmt, ...)
 {
@@ -58,7 +92,25 @@ grub_fatal (const char *fmt, ...)
 
   grub_abort ();
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 将当前错误号和错误消息压入错误消息堆栈。
+*
+* @note 注释详细内容:
+*
+* 本函数实现将当前错误号和错误消息压入错误消息堆栈的功能。错误消息堆栈是使用数组实现的；
+* 如果当前堆栈位置在grub_error_stack_pos小于数组大小，那么就将grub_errno和当前的错误消息
+* 压入grub_error_stack_pos所在的数组grub_error_stack_items[]的对应元素，否则设置全局变量
+* grub_error_stack_assert；最后清除grub_errno让其他模块可以继续执行。
+**/
 void
 grub_error_push (void)
 {
@@ -86,6 +138,24 @@ grub_error_push (void)
   grub_errno = GRUB_ERR_NONE;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 从错误消息堆栈弹出最近的错误信息。
+*
+* @note 注释详细内容:
+*
+* 本函数实现从错误消息堆栈弹出最近的错误信息的功能。错误消息堆栈是使用数组实现的；
+* 如果当前堆栈位置在grub_error_stack_pos大于0则从当前位置弹出错误消息，否则设置错
+* 误号grub_errno为GRUB_ERR_NONE。
+**/
 int
 grub_error_pop (void)
 {
@@ -110,6 +180,26 @@ grub_error_pop (void)
     }
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 反向打印所有错误堆栈中的错误信息。
+*
+* @note 注释详细内容:
+*
+* 本函数实现反向打印所有错误堆栈中的错误信息的功能。对于错误堆栈中的每条消息，如
+* 果grub_errno != GRUB_ERR_NONE则打印对应的错误消息，并继续使用grub_error_pop()弹出
+* 下一个错误消息，直到grub_error_pop()返回0表示没有已经存储的错误消息。如果曾经出
+* 现错误消息满（grub_error_stack_assert被设置的情况），则打印一条错误堆栈溢出的消息
+* 并重置grub_error_stack_assert。
+**/
 void
 grub_print_error (void)
 {

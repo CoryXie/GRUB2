@@ -31,6 +31,23 @@ void (*EXPORT_VAR (grub_grubnet_fini)) (void);
 grub_file_filter_t grub_file_filters_all[GRUB_FILE_FILTER_MAX];
 grub_file_filter_t grub_file_filters_enabled[GRUB_FILE_FILTER_MAX];
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 获取文件名参数name的中的设备名部分。
+*
+* @note 注释详细内容:
+*
+* 本函数实现获取文件名参数name的中的设备名部分的功能。文件名由设备名加上实际的文件
+* 路径名组成，其中设备名的格式是"(hd0)“，因此本函数就是要返回"(hd0)“中的"hd0“部分。
+**/
 /* Get the device part of the filename NAME. It is enclosed by parentheses.  */
 char *
 grub_file_get_device_name (const char *name)
@@ -58,6 +75,27 @@ grub_file_get_device_name (const char *name)
   return 0;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 打开文件。
+*
+* @note 注释详细内容:
+*
+* 本函数实现打开文件的功能。首先使用grub_file_get_device_name()获得文件名的设备部分；然后
+* 获得文件名的文件部分；然后再调用grub_device_open()打开设备；然后分配一个grub_file_t结构，
+* 如果文件名部分不是以'/'开始的话，则使用grub_fs_blocklist以block list的方式读取文件；否则
+* grub_fs_probe()探测实际的文件系统；之后使用file->fs->open()来打开文件；然后对所有的使用
+* grub_file_filters_enabled[]使能的文件过滤器，都调用该函数指针。再用grub_file_filters_all
+* 来拷贝给grub_file_filters_enabled[]。
+**/
 grub_file_t
 grub_file_open (const char *name)
 {
@@ -111,7 +149,7 @@ grub_file_open (const char *name)
       }
   if (!file)
     grub_file_close (last_file);
-    
+
   grub_memcpy (grub_file_filters_enabled, grub_file_filters_all,
 	       sizeof (grub_file_filters_enabled));
 
@@ -130,7 +168,24 @@ grub_file_open (const char *name)
 
   return 0;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 读取文件内容到缓冲区。
+*
+* @note 注释详细内容:
+*
+* 本函数实现读取文件内容到缓冲区的功能。首先进行一系列的参数检查，例如偏移量不能超过文件
+* 大小，读取大小不能为0，也不能超过文件剩余的大小等等，然后调用文件系统驱动的read()接口
+* 函数来实际读取文件内容。
+**/
 grub_ssize_t
 grub_file_read (grub_file_t file, void *buf, grub_size_t len)
 {
@@ -161,7 +216,23 @@ grub_file_read (grub_file_t file, void *buf, grub_size_t len)
 
   return res;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 关闭文件。
+*
+* @note 注释详细内容:
+*
+* 本函数实现关闭文件的功能。首先调用文件系统驱动的close()函数指针关闭文件；然后如果是
+* 实际的磁盘设备，则还要调用grub_device_close()关闭磁盘设备；最后释放文件结构。
+**/
 grub_err_t
 grub_file_close (grub_file_t file)
 {
@@ -173,7 +244,23 @@ grub_file_close (grub_file_t file)
   grub_free (file);
   return grub_errno;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 定位文件位置。
+*
+* @note 注释详细内容:
+*
+* 本函数实现定位文件位置的功能。将当前的文件偏移量保存为old，然后更新当前的偏移量为参
+* 数指定值。
+**/
 grub_off_t
 grub_file_seek (grub_file_t file, grub_off_t offset)
 {
@@ -185,9 +272,9 @@ grub_file_seek (grub_file_t file, grub_off_t offset)
 		  N_("attempt to seek outside of the file"));
       return -1;
     }
-  
+
   old = file->offset;
   file->offset = offset;
-    
+
   return old;
 }
