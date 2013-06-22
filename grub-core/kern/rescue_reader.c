@@ -27,7 +27,23 @@
 #define GRUB_RESCUE_BUF_SIZE	256
 
 static char linebuf[GRUB_RESCUE_BUF_SIZE];
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 读入用户输入命令行。
+*
+* @note 注释详细内容:
+*
+* 本函数实现读入用户输入命令行的功能。根据控制值cont，首先打印一个行首"grub rescue> "或
+* 者"> "，然后读入用户输入的命令行字符串，并返回到输出参数**line中。
+**/
 /* Prompt to input a command and read the line.  */
 static grub_err_t
 grub_rescue_read_line (char **line, int cont)
@@ -73,7 +89,23 @@ grub_rescue_read_line (char **line, int cont)
 
   return 0;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 救援模式命令行循环。
+*
+* @note 注释详细内容:
+*
+* 本函数实现救援模式命令行循环的功能。该循环不断调用grub_rescue_read_line()读入命令行输
+* 入，并调用grub_rescue_parse_line()来解析并执行该命令行输入。
+**/
 void __attribute__ ((noreturn))
 grub_rescue_run (void)
 {

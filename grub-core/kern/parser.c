@@ -55,7 +55,29 @@ static struct grub_parser_state_transition state_transitions[] = {
   {0, 0, 0, 0}
 };
 
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 判定命令行当前状态的下一个状态。
+*
+* @note 注释详细内容:
+*
+* 本函数实现判定命令行当前状态的下一个状态的功能。函数扫描所有的可能状态转换，找到匹配的
+* 原状态（与state参数一致）和当前输入比对字符c，这两个值就决定了下一个状态，因此如果找到
+* 这样的匹配，就直接退出，返回这个转换对应的新状态。如果没找到完全匹配（输入c与状态转换
+* 要求的input一致），那么如果这个input要求的是空格而字符c既不是alpha，也不是数字，也不是
+* 下划线，则也算是匹配，也可以返回对应的转换。再者，如果该转换要求的input为空，那么也可以
+* 算一个不是很完美的匹配，也返回对应的转换。如果前面扫描找到的状态转换的原状态为空，那么
+* 就只能用默认的转换（新状态与参数state一样，而且result保持输入字符的原值）。最后返回的是
+* 找到的转换的新状态。
+**/
 /* Determines the state following STATE, determined by C.  */
 grub_parser_state_t
 grub_parser_cmdline_state (grub_parser_state_t state, char c, char *result)
@@ -96,6 +118,24 @@ grub_parser_cmdline_state (grub_parser_state_t state, char c, char *result)
 }
 
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 从命令行输入文本字符串中分离出命令的参数个数和参数数组。
+*
+* @note 注释详细内容:
+*
+* 本函数实现从命令行输入文本字符串中分离出命令的参数个数和参数数组的功能。参数cmdline为
+* 命令行文本字符串输入；参数getline为用来读入一行文本的回调函数；参数*argc为用来保存分离
+* 出来的参数个数的输出参数；参数***argv为用来保存分离出来的参数数组的输出参数。
+**/
 grub_err_t
 grub_parser_split_cmdline (const char *cmdline, grub_reader_getline_t getline,
 			   int *argc, char ***argv)
@@ -231,7 +271,24 @@ grub_parser_split_cmdline (const char *cmdline, grub_reader_getline_t getline,
 
   return 0;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 解析并执行多行命令输入。
+*
+* @note 注释详细内容:
+*
+* 本函数实现解析并执行多行命令输入的功能。函数循环调用内部的getline()函数分离出以'\n'分
+* 开的每一行，然后使用grub_rescue_parse_line()进一步对输入行进行解析并执行，直到将source
+* 输入的每一行都解析执行完。
+**/
 grub_err_t
 grub_parser_execute (char *source)
 {
