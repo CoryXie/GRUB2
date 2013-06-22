@@ -45,8 +45,10 @@ grub_net_t (*grub_net_open) (const char *name) = NULL;
 * 本函数实现打开设备的功能。
 *
 * 如果设备名为空，那么先调用grub_env_get()获取根设备名称；接着尝试使用grub_disk_open()
-* 来打开磁盘设备；如果打开失败，那么在尝试使用grub_net_open()来打开网络设备。不论是哪类
-* 设备，最后都将打开的设备的句柄保存下来到返回。
+* 来打开磁盘设备，如果成功则将打开的磁盘设备结构存入dev->disk，以后就可以通过这个结构
+* 非空而知道这个设备是磁盘设备；如果打开失败，那么在尝试使用grub_net_open()来打开网络
+* 设备并将打开的网络设备结构存入dev->net。不论是哪类设备，最后都将打开的设备的句柄保
+* 存下来并返回。
 **/
 grub_device_t
 grub_device_open (const char *name)

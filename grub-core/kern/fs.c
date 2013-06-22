@@ -31,7 +31,36 @@
 grub_fs_t grub_fs_list = 0;
 
 grub_fs_autoload_hook_t grub_fs_autoload_hook = 0;
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 探测设备的文件系统。
+*
+* @note 注释详细内容:
+*
+* 本函数实现探测设备的文件系统的功能。分两种情况：
+*
+* 1） 如果是网络设备，则直接返回device->net->fs；
+* 2） 然而如果该设备是磁盘设备(device->disk非空)，则该函数首先扫描目前已经载入了的文件系
+* 统列表grub_fs_list，使用每个可支持的文件系统的p->dir()函数来测试是否可以加载该设备，如
+* 果可以（grub_errno返回GRUB_ERR_NONE），则返回该grub_fs_list文件系统项；接着如果目前支持
+* grub_fs_autoload_hook（非空），那么就循环调用grub_fs_autoload_hook()，直到该函数返回0。
+* 在调用grub_fs_autoload_hook()的过程中（实际上调用的是grub-2.00/grub-core/normal/autofs.c
+* 中的autoload_fs_module()函数），会根据fs_module_list来加载文件系统支持模块，每次加入一个
+* 文件系统的支持，该支持模块就使用grub_fs_register()加入一个grub_fs_t项到grub_fs_list的首部；
+* 也就是说grub_fs_list一直是刚刚加入的那个文件系统模块；因此，调用完grub_fs_autoload_hook()
+* 之后，代码立即使用grub_fs_list（也就是刚刚载入的文件系统支持模块）本身的->dir()函数来尝试
+* 是否可以加载该设备。也就是说，该函数在探测磁盘文件系统的时候，不但使用了已经载入到系统
+* 中的文件系统，还在已经载入的文件系统都没探测成功的时候尝试用尚未载入的文件系统支持模块
+* 来看是否可以支持，也就是说支持了文件系统的自动加载机制。
+**/
 grub_fs_t
 grub_fs_probe (grub_device_t device)
 {
@@ -129,7 +158,26 @@ struct grub_fs_block
   grub_disk_addr_t offset;
   unsigned long length;
 };
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 按照block list的方式打开文件。
+*
+* @note 注释详细内容:
+*
+* 本函数实现按照block list的方式打开文件的功能。文件名参数name是以如下格式的字符串数组：
+* "offset+length,offset+length,..."；该函数首先通过计算文件名中的","个数来判断该文件有多
+* 少个block，然后分配这么多个struct grub_fs_block的数组空间；对每个struct grub_fs_block再
+* 解析offset和length来初始化；并计算该文件总体的大小，保存在file->size中；最后将生成的
+* struct grub_fs_block的数组空间指针保存在file->data中。
+**/
 static grub_err_t
 grub_fs_blocklist_open (grub_file_t file, const char *name)
 {
@@ -199,6 +247,25 @@ grub_fs_blocklist_open (grub_file_t file, const char *name)
   return grub_errno;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 按照block list的方式读取文件。
+*
+* @note 注释详细内容:
+*
+* 本函数实现按照block list的方式读取文件的功能。首先根据file->offset活动文件当前偏移的
+* sector和sector offset；文件可以是一个block或很多个block，每个block都有磁盘扇区位址和
+* 磁盘扇区长度。读取文件时，将文件偏移转换成磁盘的磁盘扇区位址和磁盘扇区长度，再执行读
+* 取。
+**/
 static grub_ssize_t
 grub_fs_blocklist_read (grub_file_t file, char *buf, grub_size_t len)
 {

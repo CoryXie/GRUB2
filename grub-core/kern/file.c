@@ -259,7 +259,7 @@ grub_file_close (grub_file_t file)
 * @note 注释详细内容:
 *
 * 本函数实现定位文件位置的功能。将当前的文件偏移量保存为old，然后更新当前的偏移量为参
-* 数指定值。
+* 数指定值，最后返回保存的old偏移量。
 **/
 grub_off_t
 grub_file_seek (grub_file_t file, grub_off_t offset)

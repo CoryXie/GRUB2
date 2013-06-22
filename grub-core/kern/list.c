@@ -21,6 +21,23 @@
 #include <grub/misc.h>
 #include <grub/mm.h>
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 使用名字在命名链表上查找一个链表项。
+*
+* @note 注释详细内容:
+*
+* 本函数实现使用名字在命名链表上查找一个链表项的功能。使用FOR_LIST_ELEMENTS()扫描链表的
+* 每一项并使用grub_strcmp()对名字进行比较，从而得出找到的项。
+**/
 void *
 grub_named_list_find (grub_named_list_t head, const char *name)
 {
@@ -33,6 +50,22 @@ grub_named_list_find (grub_named_list_t head, const char *name)
   return NULL;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 将新项目插入到命名链表的头部。
+*
+* @note 注释详细内容:
+*
+* 本函数实现将新项目插入到命名链表的头部的功能。
+**/
 void
 grub_list_push (grub_list_t *head, grub_list_t item)
 {
@@ -43,6 +76,22 @@ grub_list_push (grub_list_t *head, grub_list_t item)
   *head = item;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 将项目从命名链表中删除。
+*
+* @note 注释详细内容:
+*
+* 本函数实现将项目从命名链表中删除的功能。
+**/
 void
 grub_list_remove (grub_list_t item)
 {

@@ -76,10 +76,49 @@
 # undef grub_memalign
 #endif
 
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief GRUB2内存管理简介。
+*
+* @note 注释详细内容:
+*
+* GRUB2核心内存管理器从BIOS取得计算机的内存配置，并串接在区域内存(grub_mm_region)链表，
+* 链表头为grub_mm_base。每块内存区域可以分配成很多小块内存，并由内存头(grub_mm_header)
+* 将其链结成小块内存链表，链表头位于每块区域内存的最前面。当模块载入时，模块管理器从
+* 内存管理器取得内存，将模块的文件内容链结到核心文件结构。核心内存管理器文件是
+* grub-2.00/grub-core/kern/mm.c。内存分布图和计算机架构有关，以I386-PC架构来说，就是
+* grub-2.00/grub-core/kern/i386/pc/mmap.c。至于grub-2.00/grub-core/mmap的mmap模块则是需
+* 要透过模块加载过程后才能使用的mmap命令。
+**/
 
 grub_mm_region_t grub_mm_base;
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 获得已分配内存对应的头部(grub_mm_header_t)和区域(grub_mm_region_t)指针。
+*
+* @note 注释详细内容:
+*
+* 本函数实现获得已分配内存对应的头部(grub_mm_header_t)和区域(grub_mm_region_t)指针的功能。
+* 函数首先判断参数ptr是否落在某个以grub_mm_base开头的grub_mm_region_t区域内(并保存在r中)；
+* 接着将ptr减去grub_mm_header_t结构大小，就得到对应的grub_mm_header_t指针(并保存在p中)。
+**/
 /* Get a header from the pointer PTR, and set *P and *R to a pointer
    to the header and a pointer to its region, respectively. PTR must
    be allocated.  */
@@ -104,7 +143,24 @@ get_header_from_pointer (void *ptr, grub_mm_header_t *p, grub_mm_region_t *r)
     grub_fatal ("alloc magic is broken at %p: %lx", *p,
 		(unsigned long) (*p)->magic);
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 将一片内存区域初始化成由一个grub_mm_region_t管理的空闲内存。
+*
+* @note 注释详细内容:
+*
+* 本函数实现将一片内存区域初始化成由一个grub_mm_region_t管理的空闲内存的功能。函数首先在
+* 该片内存中cast出一片grub_mm_region_t结构，然后再cast出一个grub_mm_header_t结构，之后再
+* 将这个grub_mm_region_t区域结构按照由小到大的顺序插入到以grub_mm_base开始的区域链表中。
+**/
 /* Initialize a region starting from ADDR and whose size is SIZE,
    to use it as free space.  */
 void
@@ -144,6 +200,27 @@ grub_mm_init_region (void *addr, grub_size_t size)
   r->next = q;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 内存分配的核心函数。
+*
+* @note 注释详细内容:
+*
+* 本函数实现内存分配的核心函数的功能。参数first是grub_mm_header_t结构构成的ring buffer的
+* 起始地址，参数n是要分配的以GRUB_MM_ALIGN大小为单位的元素个数，参数align为以GRUB_MM_ALIGN
+* 大小为单位的对齐要求。函数首先检查first本身是不是已经被分配（GRUB_MM_ALLOC_MAGIC被设置），
+* 如果已经被分配那么就表示所有的内存都分配完了，从而返回0；接着在first开始的链表中寻找一个
+* 可以用以分配的位置，要求能满足大小，对齐，未分配的要求，并对找到区域进行二次划分；最后
+* 标记分配出来的内存区域为GRUB_MM_ALLOC_MAGIC。
+**/
 /* Allocate the number of units N with the alignment ALIGN from the ring
    buffer starting from *FIRST.  ALIGN must be a power of two. Both N and
    ALIGN are in units of GRUB_MM_ALIGN.  Return a non-NULL if successful,
@@ -215,7 +292,7 @@ grub_real_malloc (grub_mm_header_t *first, grub_size_t n, grub_size_t align)
 	  else if (extra == 0)
 	    {
 	      grub_mm_header_t r;
-	      
+
 	      r = p + extra + n;
 	      r->magic = GRUB_MM_FREE_MAGIC;
 	      r->size = p->size - extra - n;
@@ -279,7 +356,25 @@ grub_real_malloc (grub_mm_header_t *first, grub_size_t n, grub_size_t align)
 
   return 0;
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 按对齐要求进行内存分配。
+*
+* @note 注释详细内容:
+*
+* 本函数实现按对齐要求进行内存分配的功能。参数align为要求的对齐要求，参数size为要分配的内
+* 存大小。从grub_mm_base开始，尝试用grub_real_malloc()来使用该区域第一个grub_mm_header_t
+* 进行分配，如果分配成功则直接返回；如果所有的区域都没法分配，则尝试无效磁盘缓冲来增加内
+* 存，这是通过调用grub_disk_cache_invalidate_all()来完成的。
+**/
 /* Allocate SIZE bytes with the alignment ALIGN and return the pointer.  */
 void *
 grub_memalign (grub_size_t align, grub_size_t size)
@@ -332,6 +427,23 @@ grub_memalign (grub_size_t align, grub_size_t size)
   return 0;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 无对齐要求进行内存分配。
+*
+* @note 注释详细内容:
+*
+* 本函数实现无对齐要求进行内存分配的功能。参数size为要分配的内存大小。实际是调用
+* grub_memalign()来实际实现内存分配的。
+**/
 /* Allocate SIZE bytes and return the pointer.  */
 void *
 grub_malloc (grub_size_t size)
@@ -339,6 +451,23 @@ grub_malloc (grub_size_t size)
   return grub_memalign (0, size);
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 无对齐要求进行内存分配并清空分配出来的内存。
+*
+* @note 注释详细内容:
+*
+* 本函数实现无对齐要求进行内存分配并清空分配出来的内存的功能。参数size为要分配的内存大小。
+* 实际是调用grub_memalign()来实际实现内存分配的，并调用grub_memset()清空分配出来的内存。
+**/
 /* Allocate SIZE bytes, clear them and return the pointer.  */
 void *
 grub_zalloc (grub_size_t size)
@@ -352,6 +481,28 @@ grub_zalloc (grub_size_t size)
   return ret;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 释放已分配的内存。
+*
+* @note 注释详细内容:
+*
+* 本函数实现释放已分配的内存的内存的功能。首先调用get_header_from_pointer()获得该内存的
+* grub_mm_header_t和grub_mm_region_t地址；然后将安装两种情况处理：
+*
+* 1） 如果区域的第一个header已经被分配（GRUB_MM_ALLOC_MAGIC），则将该区域的header设为空
+* 闲，并将其设为第一个该区域的第一个header。
+* 2） 否则，就在r->first开始的列表中找到恰当的位置，并设置GRUB_MM_FREE_MAGIC，将区域插入
+* 空闲列表。
+**/
 /* Deallocate the pointer PTR.  */
 void
 grub_free (void *ptr)
@@ -421,7 +572,25 @@ grub_free (void *ptr)
       r->first = q;
     }
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 重新分配内存。
+*
+* @note 注释详细内容:
+*
+* 本函数实现重新分配内存的功能。如果参数ptr为空，则直接分配size大小的内存并返回；
+* 如果size为0，则直接释放ptr对应的内存；否则如果原本内存所在区域的大小比size要
+* 求的更大，则直接返回ptr；否则先重新分配size大小的内存，并将原有内存区域拷贝到
+* 新分配的内存中，再释放原有ptr对应的内存，返回新分配的内存。
+**/
 /* Reallocate SIZE bytes and return the pointer. The contents will be
    the same as that of PTR.  */
 void *
@@ -569,7 +738,7 @@ grub_debug_memalign (const char *file, int line, grub_size_t align,
   void *ptr;
 
   if (grub_mm_debug)
-    grub_printf ("%s:%d: memalign (0x%" PRIxGRUB_SIZE  ", 0x%" PRIxGRUB_SIZE  
+    grub_printf ("%s:%d: memalign (0x%" PRIxGRUB_SIZE  ", 0x%" PRIxGRUB_SIZE
 		 ") = ", file, line, align, size);
   ptr = grub_memalign (align, size);
   if (grub_mm_debug)
