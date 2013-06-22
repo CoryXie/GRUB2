@@ -32,7 +32,24 @@ static grub_uint64_t tsc_boot_time;
 /* Calibrated TSC rate.  (In TSC ticks per millisecond.) */
 static grub_uint64_t tsc_ticks_per_ms;
 
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 特定于i386-pc架构的TSC时间取得函数。
+*
+* @note 注释详细内容:
+*
+* 本函数实现特定于i386-pc架构的TSC时间取得函数的功能。这是I386-PC 架构独有的时间取得函数，
+* 取得CPU 时间值后，再转换成毫秒为单位的时间值。其中函数grub_get_tsc() 取得CPU时间戳计值，
+* tsc_ticks_per_ms 是时间戳计值转换成毫时间值的除数值。
+**/
 grub_uint64_t
 grub_tsc_get_time_ms (void)
 {
@@ -42,7 +59,24 @@ grub_tsc_get_time_ms (void)
 
 /* How many RTC ticks to use for calibration loop. (>= 1) */
 #define CALIBRATION_TICKS 2
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 基于RTC的时间戳校准函数。
+*
+* @note 注释详细内容:
+*
+* 本函数实现基于RTC的时间戳校准函数的功能。函数首先取得CPU时间戳值，这是时间起始值；然后
+* 使用PIT等待跳过0xffff的时间值;接着再次取得CPU时间戳值，这是时间终了值。最后时间戳的差异
+* 除以时间值55毫秒，算得每毫秒的时间戳计时次数，存入tsc_ticks_per_ms中。
+**/
 /* Calibrate the TSC based on the RTC.  */
 static void
 calibrate_tsc (void)
@@ -57,7 +91,25 @@ calibrate_tsc (void)
 
   tsc_ticks_per_ms = grub_divmod64 (end_tsc - start_tsc, 55, 0);
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月8日
+*
+* @brief 时间戳初始化函数。
+*
+* @note 注释详细内容:
+*
+* 本函数实现时间戳初始化函数的功能。函数在CPU支持时间戳时，取得目前时间戳计值，这是时间
+* 起始值，然后调用时间校准函数calibrate_tsc()，取得毫秒时间戳计时次数值；然后安装时间戳
+* 计时间取得函式成为时间管理器的时间取得函数。如果CPU没有支持时间戳，使用RTC的时间取得
+* 函数grub_rtc_get_time_ms做为时间管理器的时间取得函数。
+**/
 void
 grub_tsc_init (void)
 {
