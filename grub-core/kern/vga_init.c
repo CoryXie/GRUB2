@@ -56,7 +56,22 @@ extern unsigned char ascii_bitmaps[];
 #else
 #define VGA_ADDR 0xa0000
 #endif
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月22日
+*
+* @brief 加载VGA字体。
+*
+* @note 注释详细内容:
+*
+* 本函数实现加载VGA字体的功能。
+**/
 static void
 load_font (void)
 {
@@ -75,7 +90,22 @@ load_font (void)
   for (i = 0; i < 128; i++)
     grub_memcpy ((void *) (VGA_ADDR + 32 * i), ascii_bitmaps + 16 * i, 16);
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月22日
+*
+* @brief 加载VGA调色板。
+*
+* @note 注释详细内容:
+*
+* 本函数实现加载VGA调色板的功能。
+**/
 static void
 load_palette (void)
 {
@@ -86,7 +116,22 @@ load_palette (void)
   for (i = 0; i < ARRAY_SIZE (colors); i++)
     grub_vga_palette_write (i, colors[i].r, colors[i].g, colors[i].b);
 }
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月22日
+*
+* @brief 初始化VGA。
+*
+* @note 注释详细内容:
+*
+* 本函数实现初始化VGA的功能。
+**/
 void
 grub_qemu_init_cirrus (void)
 {
