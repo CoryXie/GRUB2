@@ -33,6 +33,23 @@ typedef enum
 } grub_embed_type_t;
 #endif
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 分区管理器介绍
+*
+* @param next 分区映射类型指针，指向下一个分区映射类型。
+* @param prev 分区映射类型指针，指向前一个分区映射类型。
+* @param name 分区映射类型名称字符串指针，指向此分区映射类型的字符串位址。
+* @param iterate 分区反覆探测函数指针，指向该分区映射类型专用的函数。
+**/
 /* Partition map type.  */
 struct grub_partition_map
 {
@@ -56,7 +73,27 @@ struct grub_partition_map
 #endif
 };
 typedef struct grub_partition_map *grub_partition_map_t;
-
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月21日
+*
+* @brief 分区管理器介绍
+*
+* @param number 分区号码，。
+* @param start 分区磁盘起始磁区位置，。
+* @param len 分区长度，单位是扇区。
+* @param offset 分区偏移。
+* @param index 分区表项索引。
+* @param parent 主分区指针，不为空指针时，表示此分区为子分区。
+* @param partmap 分区映射类型，。
+* @param msdostype 分区类型，。
+**/
 /* Partition description.  */
 struct grub_partition
 {
