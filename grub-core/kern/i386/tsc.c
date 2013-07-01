@@ -108,7 +108,13 @@ calibrate_tsc (void)
 * 本函数实现时间戳初始化函数的功能。函数在CPU支持时间戳时，取得目前时间戳计值，这是时间
 * 起始值，然后调用时间校准函数calibrate_tsc()，取得毫秒时间戳计时次数值；然后安装时间戳
 * 计时间取得函式成为时间管理器的时间取得函数。如果CPU没有支持时间戳，使用RTC的时间取得
-* 函数grub_rtc_get_time_ms做为时间管理器的时间取得函数。
+* 函数grub_rtc_get_time_ms做为时间管理器的时间取得函数。该函数首先判断机器是否支持TSC。
+* 时间戳计数器（TSC）是一个64位寄存器，存在于所有奔腾以来的x86处理器。它从复位开始就对
+* 机器的周期数进行计数。指令RDTSC返回TSC的值到 EDX:EAX中。在x86-64模式时，RDTSC也清除
+* RAX的高32位。使用时间戳计数器（TSC），可以以出色的高分辨率，低开销的方式获得CPU时序
+* 信息。因此，如果机器支持TSC，就会尽量使用TSC作为计时方式。此时，第一件事就是调用
+* grub_get_tsc ()来获得GRUB2启动的时间tsc_boot_time。接着，调用calibrate_tsc ()来校正
+* TSC，获得tsc_ticks_per_ms，表示没毫秒TSC会跳变多少次（这个校正是通过PIT来进行的）。
 **/
 void
 grub_tsc_init (void)

@@ -58,6 +58,23 @@ grub_console_getxy (struct grub_term_output *term __attribute__ ((unused)))
   return ((regs.edx & 0xff) << 8) | ((regs.edx & 0xff00) >> 8);
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 定位到指定的终端位置。
+*
+* @note 注释详细内容:
+*
+* 这个函数实际也是使用BIOS中断调用"INT 10H Function 02h"来实现的，将x,y封装到BIOS调用输
+* 入参数的EDX寄存器中。
+**/
 /*
  * BIOS call "INT 10H Function 02h" to set cursor position
  *	Call with	%ah = 0x02
@@ -79,6 +96,29 @@ grub_console_gotoxy (struct grub_term_output *term __attribute__ ((unused)),
   grub_bios_interrupt (0x10, &regs);
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 输出字符。
+*
+* @note 注释详细内容:
+*
+* 下面的输出字符的代码有一段解释，说明了输出的过程（这样做是因为没有很好的办法能得到屏幕
+* 的高度，而TELETYPE OUTPUT BIOS调用也不能支持带属性地输出字符）：
+* 
+* 1）	如果要输出的是控制字符(CR, LF, BEL, BS)，直接使用INT 10, AH = 0Eh，(TELETYPE OUTPUT)；
+* 2）	否则，先保存当前的位置（为原位置），如果当前的位置到了行尾，则输出空格，并再次保存新
+*     的当前位置；
+* 3）	然后再用int10_9()来实际输出带有属性的字符（输出字符带有指定颜色）；
+* 4）	再使用grub_console_gotoxy()回到前面保存的位置。 
+**/
 /*
  *
  * Put the character C on the console. Because GRUB wants to write a
@@ -185,6 +225,31 @@ grub_console_setcursor (struct grub_term_output *term __attribute__ ((unused)),
   grub_bios_interrupt (0x10, &regs);
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 获得按键值。
+*
+* @note 注释详细内容:
+*
+* 该函数使用BIOS中断来读取键盘输入，大致过程如下：
+*
+* 1）	使用"INT 16H Function 01H"先检查是否有按键输入；如果没有按键输入就返回
+*     GRUB_TERM_NO_KEY；
+* 2）	使用"INT 16H Function 00H"来实际读入按键；并根据返回的EAX的值的状态进行相应处理。
+*     如果EAX的AL部分为0（即ASCII字符部分为0），则返回AH部分或上GRUB_TERM_EXTENDED（即
+*    ((regs.eax >> 8) & 0xff) | GRUB_TERM_EXTENDED）；否则，如果AL部分大于空格字符' '
+*    的值，则返回AL部分（即ASCII字符部分）；再否则，如果EAX的值与bypass_table中的几个
+*    值中的某个匹配，也就是按下了几个特殊的按键，如制表符，回车，换行等，则返回AL部分；
+*    最后，返回(regs.eax & 0xff) + (('a' - 1) | GRUB_TERM_CTRL)，即输入的常规字符。
+**/
 /*
  *	if there is a character pending, return it; otherwise return -1
  * BIOS call "INT 16H Function 01H" to check whether a character is pending
@@ -243,6 +308,26 @@ grub_console_getkey (struct grub_term_input *term __attribute__ ((unused)))
 static const struct grub_machine_bios_data_area *bios_data_area =
   (struct grub_machine_bios_data_area *) GRUB_MEMORY_MACHINE_BIOS_DATA_AREA_ADDR;
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 获得按键状态。
+*
+* @note 注释详细内容:
+*
+* 这个函数很简单，因为BIOS调用有个特点，就是在BIOS中断调用之后，BIOS会将一个数据存入到
+* 所谓的BIOS数据区域，这段区域是在低端内存部分，可以直接读取；GRUB的做法是直接将这个数
+* 据区域GRUB_MEMORY_MACHINE_BIOS_DATA_AREA_ADDR强制转换为一个
+* struct grub_machine_bios_data_area结构体，从而可以直接按照访问普通的数据结构那样直接
+* 访问；例如这里的bios_data_area->keyboard_flag_lower就是直接得到按键状态。
+**/
 static int
 grub_console_getkeystatus (struct grub_term_input *term __attribute__ ((unused)))
 {
@@ -272,6 +357,24 @@ static struct grub_term_output grub_console_term_output =
     .highlight_color = GRUB_TERM_DEFAULT_HIGHLIGHT_COLOR,
   };
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 控制台初始化。
+*
+* @note 注释详细内容:
+*
+* 这里grub_console_init()分别调用grub_term_register_output()和grub_term_register_input()
+* 注册了输入和输出的控制台终端，即grub_console_term_input 和grub_console_term_output结构。
+* 这两个结构都是在【grub-2.00/include/grub/term.h】中定义的。
+**/
 void
 grub_console_init (void)
 {

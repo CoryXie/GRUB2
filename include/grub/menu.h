@@ -26,6 +26,33 @@ struct grub_menu_entry_class
   struct grub_menu_entry_class *next;
 };
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 菜单项结构。
+*
+* @note 注释详细内容: 
+*
+* 下面对该struct grub_menu_entry结构的关键字段进行说明：
+* 
+* - title，主题，即描述该菜单项的简要描述;
+* - id，标识符，用于区分各个菜单项；
+* - restricted，受限制的菜单项，表示需要用户身份验证才能启动的菜单项；
+* - users，用于验证的用户列表；
+* - classes，风格类型，用于选择一个图标或者其他风格属性；
+* - sourcecode，脚本代码；
+* - argc和args，脚本代码的参数个数和参数字符串数组；
+* - hotkey，热键，按热键会导致对应的菜单项被运行；
+* - submenu，表示该菜单项为子菜单；
+* - next，指向菜单项链表的下一项。
+**/
 /* The menu entry.  */
 struct grub_menu_entry
 {
@@ -74,6 +101,27 @@ struct grub_menu
 };
 typedef struct grub_menu *grub_menu_t;
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 菜单视图的回调函数指针结构。
+*
+* @note 注释详细内容: 
+*
+* 下面对该struct grub_menu_execute_callback结构的关键字段进行说明：
+* 
+* - notify_booting，当启动某个菜单项之前会用该函数指针，用于通知用户开始启动了；
+* - notify_fallback，如果前面一次启动菜单失败，会回退到下一个菜单项再次尝试，该函数指针
+*   就是在开始再次尝试时调用，告诉用于通知菜单视图即将尝试新的entry；
+* - notify_failure，当重试了所有的菜单项都没有成功运行时，会调用该函数指针通知最后失败。
+**/
 /* Callback structure menu viewers can use to provide user feedback when
    default entries are executed, possibly including fallback entries.  */
 typedef struct grub_menu_execute_callback

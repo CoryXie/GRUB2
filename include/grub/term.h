@@ -143,6 +143,30 @@ grub_term_color_state;
 /* The Y position of the first entry.  */
 #define GRUB_TERM_FIRST_ENTRY_Y	(GRUB_TERM_TOP_BORDER_Y + 1)
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 终端输入结构。
+*
+* @note 注释详细内容: 
+*
+* 下面对该struct grub_term_input结构的关键字段进行说明：
+* 
+* - Next和prev 用来链接多个输入终端；
+* - Name代表该终端的名字；
+* - Init()为用以初始化该终端的函数指针；
+* - Fini()是在终端退出时的清理函数指针；
+* - Getkey()函数指针用以获得一个输入字符，如果没有输入字符则返回-1；
+* - Getkeystatus()函数指针用以获得键盘修饰键（例如Shift,Alt等按键）；
+* - Data 为该终端的私有数据。
+**/
 struct grub_term_input
 {
   /* The next terminal.  */
@@ -168,6 +192,40 @@ struct grub_term_input
 };
 typedef struct grub_term_input *grub_term_input_t;
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 终端输出结构。
+*
+* @note 注释详细内容: 
+*
+* 下面对该struct grub_term_output结构的关键字段进行说明：
+* 
+* - Next和prev 用来链接多个输出终端；
+* - Name代表该终端的名字；
+* - Init()为用以初始化该终端的函数指针；
+* - Fini()是在终端退出时的清理函数指针；
+* - Putchar()用以输出一个Unicode编码的字符；
+* - Getcharwidth()用以获得一个以Unicode编码的字符占用的列数；
+* - Getwh()用以获取屏幕大小，返回值是((Width << 8) | Height)格式的值；
+* - Getxy()用以获取光标位置，返回值是((X << 8) | Y)格式的值；
+* - Gotoxy()用以设置光标位置到x,y处；
+* - Cls()用以清屏；
+* - Setcolorstate()用以设置当前使用的颜色状态；
+* - Refresh()用以更新屏幕；
+* - Fullscreen()用以在gfxterm模式下进入全屏模式；
+* - Flags为终端的特性标志；
+* - normal_color为终端的常规颜色；
+* - highlight_color为终端的高亮颜色；
+* - Data 为该终端的私有数据。
+**/
 struct grub_term_output
 {
   /* The next terminal.  */

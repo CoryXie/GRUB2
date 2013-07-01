@@ -117,6 +117,31 @@ add_mem_region (grub_addr_t addr, grub_size_t size)
   num_regions++;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 紧凑内存分布描述符数组。
+*
+* @note 注释详细内容:
+*
+* 这个函数实现紧凑内存分布描述符数组。该函数执行下列步骤：
+* 
+* 1）	首先将mem_regions[]数组安装addr大小排序；
+* 2）	然后按照顺序，依次对比前一个和后一个mem_regions[]数组元素，如果发现有重叠的现象，
+*     则将这两个区域再次合并。
+* 
+* 这样得出的mem_regions[]数组是一个最紧凑的内存分布描述符数组。对这个数组里面的每一项，
+* 都会调用 grub_mm_init_region()来将这片内存区域初始化成由一个grub_mm_region_t管理的空
+* 闲内存区域。有了这个初始化，GRUB2后面的代码就可以使用grub_malloc()和grub_free()等内
+* 存分配函数了。
+**/
 /* Compact memory regions.  */
 static void
 compact_mem_regions (void)
@@ -154,6 +179,44 @@ compact_mem_regions (void)
 grub_addr_t grub_modbase;
 extern grub_uint8_t _start[], _edata[];
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 体系结构特定的初始化。
+*
+* @note 注释详细内容:
+*
+* grub_main()首先调用grub_machine_init()，这是为了实现对不同体系结构，以及对于同一硬件体
+* 系结构而使用不同Firmware固件的平台进行抽象，因为每种体系结构都有特定的内存映射等特殊
+* 设置。例如【grub-2.00/grub-core/kern/i386/pc/init.c】就对X86架构的PC系列有特殊的初始
+* 化（这是基于传统BIOS的PC），而对于基于EFI启动的X86架构的PC，也有对应的另一套初始化代码
+*【grub-2.00/grub-core/kern/i386/efi/init.c】，此外对于使用coreboot作为Firmware的X86平台，
+* 使用的是【grub-2.00/grub-core/kern/i386/coreboot/init.c】中的机器初始化代码，而这几种
+* 都是针对X86架构的不同固件模式进行的支持。对于MIPS的机器，类似也有针对QEMU仿真机器的
+* 【grub-2.00/grub-core/kern/mips/qemu_mips/init.c】以及针对龙芯电脑的机器初始化代码
+* 【grub-2.00/grub-core/kern/mips/loongson/init.c】。
+*
+* 我们目前先关注X86架构PC的初始化代码，即【grub-2.00/grub-core/kern/i386/pc/init.c】文件
+* 中的grub_machine_init()。
+* 
+* 这段代码完成了以下功能：
+* 
+* 1）	将模块结构数组的基地址grub_modbase设置到GRUB核心被解压缩的内存区域的代码段的后面，
+*     即GRUB_MEMORY_MACHINE_DECOMPRESSION_ADDR + (_edata - _start)。
+* 2）	调用grub_console_init()初始化控制台。
+* 3）	调用grub_machine_mmap_iterate()初始化内存区域映射。并调用compact_mem_regions()来将
+*     内存区域映射紧凑化（对内存区域进行排序，并合并有重叠的区域）。
+* 4）	对每个内存区域，分别调用grub_mm_init_region()来初始化内存管理的区域，从而可以使用
+*     这些内存区域做内存分配。
+* 5）	调用grub_tsc_init()初始化时间戳，从而有了时间度量的基础。
+**/
 void
 grub_machine_init (void)
 {

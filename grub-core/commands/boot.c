@@ -136,6 +136,31 @@ grub_loader_unset(void)
   grub_loader_loaded = 0;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 启动内核映像
+*
+* @note 注释详细内容: GRUB2启动 Linux过程分析
+*
+* 在【grub-2.00/grub-core/commands/boot.c】中定义的boot模块对应的boot命令实际对应的处理代
+* 码是grub_loader_boot()。该函数的执行分3阶段：
+*
+* 1）执行preboots_head链表上所有元素挂接的cur->preboot_func ()函数指针，如果出错再调用此前
+*   已经调用过的元素的cur->preboot_rest_func()函数指针。这里我们暂时忽略对这些函数的分析。
+* 2）调用grub_loader_boot_func()函数指针。我们在前面看到过这个函数在执行linux命令时被设置
+*   成了grub_linux_boot()函数。
+* 3）如果前面的grub_loader_boot_func()函数返回，则循环调用preboots_tail链表上的所有元素挂
+*  接的cur->preboot_rest_func()函数指针。我们暂时忽略。
+
+**/
 grub_err_t
 grub_loader_boot (void)
 {

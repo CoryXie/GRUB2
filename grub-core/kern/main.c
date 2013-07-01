@@ -84,6 +84,31 @@ grub_modules_get_end (void)
 * 本函数实现加载GRUB2核心的所有ELF模块的功能。调用FOR_MODULES，对每个模块,如果
 * 该模块是OBJ_TYPE_ELF类型的，就调用grub_dl_load_core()来实际加载，如果出错就打
 * 印错误消息。
+*
+* 当在初始化过程对第三阶段解压缩过程中，实际上已经将GRUB kernel和各模块（这些模块是在使用
+* 操作系统命令grub-mkimage制作core.img时按照用户需要加入的）都解压缩到
+* GRUB_MEMORY_MACHINE_DECOMPRESSION_ADDR 开始处，也就是0x100000处，而kernel部分已经被复制
+* 回其链接地址0x9000处，但是模块部分还在原来被解压缩的地方。grub_load_modules() 函数就是
+* 用来从模块部分加载各模块。
+*
+* 该部分主要是通过FOR_MODULES()宏扫描所有的模块头，并通过grub_dl_load_core()函数来实现模块
+* 的实际加载。加载之后会调用模块的初始化函数，并将模块连接进入链表。其中FOR_MODULES()宏位于
+* 【grub-2.00/include/grub/kernel.h】。
+*
+* 对于FOR_MODULES()宏，我们对grub_machine_init()的分析中已经描述过grub_modbase是如何放置的，
+* 参见【grub-2.00/grub-core/kern/i386/pc/init.c】：
+*
+* - grub_modbase = GRUB_MEMORY_MACHINE_DECOMPRESSION_ADDR + (_edata - _start);
+*
+* 也就是说grub_modbase是被固定放置在数据段末尾，而FOR_MODULES()就可以通过从grub_modbase开始，
+* 先找到grub_modbase->offset，就是第一个模块的grub_module_header的基地址，然后就可以依次通
+* 过当前grub_module_header的基地址加上该grub_module_header的size，来查询到下一个
+* grub_module_header的基地址。
+*
+* 函数grub_load_modules()实际上是调用grub_dl_load_core()来实现从核心内存加载一个模块的，该
+* 函数位于【grub-2.00/grub-core/kern/dl.c】。这个核心模块加载函数将模块的各个部分解析并载
+* 入核心。 模块各部分包括授权信息、模块名称、依赖模块群、节区(segment)群、符号群。 最后，
+* 执行模块初始化函数，将模块支持的命令注册到核心的命令列表，完成模块的加载程序。
 **/
 
 /* Load all modules in core.  */
@@ -123,6 +148,13 @@ grub_load_modules (void)
 * 本函数实现加载GRUB2核心的所有配置模块的功能。调用FOR_MODULES，找到第一个类型
 * 是OBJ_TYPE_CONFIG类型的模块，并调用grub_parser_execute()来实际解析配置并执行
 * 里面的命令，然后退出。
+*
+* 在调用grub_register_core_commands ()注册set，unset，ls，insmod等核心命令之后，就建立起
+* 了最基本的执行环境。接着就调用位于【grub-2.00/grub-core/kern/main.c】的grub_load_config()
+* 函数来对GRUB做一些基本的初始化配置。
+*
+* grub_load_config()函数对模块组内每个属于OBJ_TYPE_CONFIG类型的模块分别调用函数
+* grub_parser_execute()来执行该配置文件中的初始化配置命令。
 **/
 static void
 grub_load_config (void)
@@ -188,6 +220,43 @@ grub_env_write_root (struct grub_env_var *var __attribute__ ((unused)),
 * @note 注释详细内容:
 *
 * 本函数实现设置GRUB2的prefix和root环境变量的功能。
+*
+* GRUB2支持环境变量，并且可以在命令行中使用类似Linux操作系统的shell中使用的“$”来取得环境
+* 变量的值。有两个特殊的环境变量：
+*
+* - $root 环境变量是用于包含GRUB2的根分区，例如“(hd0,1)”，它会在命令中没有加磁盘名的情况
+* 下被前置到路径名中，用于访问文件系统。
+*
+* - $prefix 环境变量用于包含“grub”目录的路径，例如“(hd0,1)/boot/grub”, 用来指定启动时
+* grub.cfg和模块文件所在的目录。
+*
+* 该函数完成了如下功能：
+*
+* 1）调用FOR_MODULES()扫描core.img中嵌入的模块区域中是否有一个OBJ_TYPE_PREFIX类型的模块。我
+* 们之前分析过，grub-mkimage有一个参数--prefix，用来指定启动时grub.cfg和模块文件所在的目录，
+* 比如：
+*
+* - #./grub-mkimage --prefix=/grub2 -d . -o core.img pc fat ntfs
+*
+* 这样在GRUB2启动时会到/grub2目录里寻找grub.cfg和模块文件。缺省目录是/boot/grub/。这里
+* OBJ_TYPE_PREFIX是一个特别的模块类型，与常规的*.mod不同，这个OBJ_TYPE_PREFIX类型的模块不是
+* 一个普通的使用代码编写出来的*.mod模块文件，而是使用grub-mkimage在生成core.img时，如果使用
+* 了“-p, --prefix=DIR”选项参数时，grub-mkimage自动添加进去的。在【grub-2.00/util/grub-mkimage.c】
+* 的generate_image()函数中有如下一段代码就是用来实现这一自动添加OBJ_TYPE_PREFIX类型的模块的。
+*
+* 2）	如果在调用grub-mkimage生成core.img时使用了“-p, --prefix=DIR”选项参数，那么prefix就非空，
+* 因此就尝试从这个OBJ_TYPE_PREFIX的模块的内容中解析用户所指定的磁盘设备device和路径path。如
+* 果没有找到OBJ_TYPE_PREFIX的模块，那么就使用grub_machine_get_bootlocation()获得实际启动的磁
+* 盘以及路径。
+*
+* 3）	调用grub_register_variable_hook ("root", 0, grub_env_write_root)添加一个名为"root"的环
+* 境变量，并且挂上用户设置"root"环境变量时对应的写钩子函数。这个grub_env_write_root()钩子函数。
+* 位于【grub-2.00/grub-core/kern/main.c】。简单而言，这个grub_env_write_root()钩子函数在用户
+* 在GRUB2命令行上调用“set root= (hdX,Y)”时,会将“(hdX,Y)”两边的括号去掉，并且将去掉之后的字符
+* 串返回给真正的$root环境变量。
+*
+* grub_set_prefix_and_root()后面的grub_env_export ("root")和grub_env_export ("prefix")就是将
+* 前面的$root和$prefix环境变量导出，作为全局的环境变量。
 **/
 
 static void

@@ -105,6 +105,10 @@ grub_rescue_read_line (char **line, int cont)
 *
 * 本函数实现救援模式命令行循环的功能。该循环不断调用grub_rescue_read_line()读入命令行输
 * 入，并调用grub_rescue_parse_line()来解析并执行该命令行输入。
+*
+* 如果前一步的“normal”的模块执行退出，则GRUB进入救援模式(rescue mode)，即执行函数
+* grub_rescue_run()。该函数式个while(1)循环函数，调用grub_rescue_read_line()函数不断读取
+* 用户命令行输入，进而调用 grub_rescue_parse_line()来解析命令，并执行之。
 **/
 void __attribute__ ((noreturn))
 grub_rescue_run (void)

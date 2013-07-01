@@ -96,6 +96,13 @@ grub_putcode_dumb (grub_uint32_t code,
 * @note 注释详细内容:
 *
 * 本函数实现输出字符串的功能。
+*
+* 实际上grub_xputs()是一个函数指针，在【grub-2.00/grub-core/kern/term.c】中被指定为指向
+* 函数grub_xputs_dumb()。这里的grub_xputs_dumb()函数实际上是对参数str的每个字符(如果该
+* 字符大于0x7f则改其为“?”)，然后使用FOR_ACTIVE_TERM_OUTPUTS()来向所有的活跃终端调用
+* grub_putcode_dumb()进行输出。因此，这里是将要输出的字符放在struct grub_unicode_glyph
+* 里面，然后最终调用term->putchar()来实际输出的。如果遇到制表符，或者回车符号，都会相
+* 应做扩展处理。
 **/
 static void
 grub_xputs_dumb (const char *str)

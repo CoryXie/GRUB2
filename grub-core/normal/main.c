@@ -277,6 +277,49 @@ read_lists_hook (struct grub_env_var *var __attribute__ ((unused)),
   return val ? grub_strdup (val) : NULL;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 执行normal命令。
+*
+* @note 注释详细内容:
+*
+* 当grub_load_normal_mode()函数加载完常规模块并调用其初始化函数之后，会调用
+* grub_command_execute()来执行常规模式命令进而进入GRUB2的常规模式。函数grub_command_execute()
+* 位于【grub-2.00/include/grub/command.h】。
+*
+* 该函数grub_command_execute()函数是通过grub_command_find()在grub_command_list列表上查找对应
+* 命令，若找到命令，则执行之。
+*
+* 由于在normal模块GRUB_MOD_INIT(normal)的初始化过程中已经注册了normal命令，因此在
+* grub_command_execute()时就能在grub_command_list列表上查找到该命令，从而执行位于
+* 【grub-2.00/grub-core/normal/main.c】的grub_cmd_normal()函数。
+* 
+* 在这个函数中，将会尝试从$prefix环境变量指定的路径找到一个配置文件，例如grub.cfg，之后调用函
+* 数grub_enter_normal_mode()，进入GRUB的常规模式。
+* 
+* 函数grub_cmd_normal()会调用【grub-2.00/grub-core/normal/main.c】的grub_enter_normal_mode()函数。
+* 而函数grub_enter_normal_mode()尝试调用【grub-2.00/grub-core/normal/main.c】的grub_normal_execute()
+* 函数来读入并执行配置文件(该文件通常是/boot/grub/grub.cfg)。这里是用户正常启动时常用的配置方式，
+* 例如可以指定要启动的操作系统的菜单，可以选择启动哪一个。
+*
+* 该grub_normal_execute()函数完成了如下步骤：
+*
+* 1）	如果不是嵌套调用该函数，则调用grub_env_get()获得环境变量$prefix的值（即grub.cfg
+*     和*.mod模块所在的目录）；并使用该$prefix指定的路径来调用read_lists()去读入command.lst，
+*     fs.lst，crypto.lst以及terminal.lst等文件的内容；进而注册环境变量$prefix的写钩子函数为
+*     read_lists_hook()。
+* 2）	如果有配置文件，则调用read_config_file (config)来读入并解析配置文件。解析的结果为用于
+*     显示的菜单信息，以grub_menu_t返回。
+* 3）	如果解析配置文件得出有菜单需要显示，则调用grub_show_menu()显示菜单。
+**/
 /* Read the config file CONFIG and execute the menu interface or
    the command line interface if BATCH is false.  */
 void
@@ -395,6 +438,25 @@ grub_normal_reader_init (int nested)
   return 0;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 读入用户命令行输入。
+*
+* @note 注释详细内容:
+*
+* 函数首先要输出一个命令行提示符，提示用户输入。本函数的参数cont，表示该函数是不是对前
+* 一次读入一行命令输入的继续，如果是，则cont为1，因此输出的提示符就是“>”，否则就输出
+* “grub>”作为新行的提示符。之后是一个while(1)循环，使用grub_cmdline_get()来得到用户的
+* 一行输入，如果返回非0，则表示得到了一行用户输入，因此返回该输入的命令。
+**/
 static grub_err_t
 grub_normal_read_line_real (char **line, int cont, int nested)
 {
@@ -432,6 +494,28 @@ grub_normal_read_line (char **line, int cont)
   return grub_normal_read_line_real (line, cont, 0);
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 运行命令行。
+*
+* @note 注释详细内容:
+*
+* 如果grub_normal_execute()函数返回，则grub_enter_normal_mode()接着进入grub_cmdline_run()。
+*
+* 进入命令行之前先有调用grub_auth_check_authentication()进行身份认证，认证失败是不能继续
+* 运行命令行界面的。接着调用grub_normal_reader_init()初始化终端，并且打印一段描述命令行
+* 的消息。再之后就是是一个while (1)循环，调用grub_normal_read_line_real()读取用户输入，
+* 使用函数grub_normal_parse_line()解释并执行（通过grub_script_execute()）。该循环直到用
+* 户输入normal_exit命令才通过grub_cmd_normal_exit()结束。
+**/
 void
 grub_cmdline_run (int nested)
 {
@@ -495,6 +579,82 @@ static const char *features[] = {
   "feature_menuentry_id", "feature_menuentry_options", "feature_200_final"
 };
 
+
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 紧凑内存分布描述符数组。
+*
+* @note 注释详细内容:
+*
+* 我们知道在grub_dl_load_core()的后面会调用grub_dl_call_init()来调用加载进来的模块的init()
+* 函数指针，对该模块进行初始化。因此，对于这里的名为“normal”的模块的执行，由于之前并没有
+* 载入过该模块，因此必定是先从CPU平台（例如$prefix/lib/i386-pc/）下面去寻找normal.mod，
+* 然后加载进入grub_dl_head链表，并执行该模块的初始化函数。“normal”模块是GRUB的第一个执行
+* 的模块，其他的模块都可以在它的引导下被进一步载入执行。对于“normal”模块，其初始化函数就
+* 是本文件中的GRUB_MOD_INIT(normal)所对应的函数。
+*
+* GRUB_MOD_INIT(normal)所对应的函数会执行如下一些关键动作，将 normal 模块的信息加载进入
+* GRUB2的核心。模块信息包含用户认证信息、模块目录、模块命令等，最后设定颜色的环境变量。
+* 
+* 1）	调用grub_dl_load()加载公用的"gzio"模块，用以解压以gzip格式压缩的数据。
+* 2）	调用grub_normal_auth_init()函数注册用户认证命令，命令名称为 authenticate，命令的执行
+*     函数为【grub-2.00/grub-core/normal/auth.c】 的 grub_cmd_authenticate() 函数。
+* 3）	调用grub_context_init()函数注册context 命令，命令名称为 export，指令的执行函数为 
+*     【grub-2.00/grub-core/normal/context.c】的 grub_cmd_export() 函数。
+* 4）	调用grub_script_init()函数注册 script 命令集，命令名称为 break、continue、shift、
+*     setparams、return 等， 这些命令的执行函数为【grub-2.00/grub-core/script/execute.c】的 
+*     grub_script_break()、grub_script_shift()、grub_script_setparams()、grub_script_return() 
+*     等函数。
+* 5）	调用grub_menu_init()函数注册菜单命令集，命令名称为 menuentry、submenu，命令的执行函
+*     数为【grub-2.00/grub-core/commands/menuentry.c】的 grub_cmd_menuentry 函数。
+* 6）	将输出函数指针保存到 grub_xputs_saved再将输出函数指针设定为 grub_xputs_normal()，从
+*     而将输出定向到当前的终端上。
+* 7）	将 normal 模块的引用计数加一，这个动作会让 normal 模块不会被卸载（因为normal 模块不
+*     可被卸载）。
+* 8）	注册清除命令，用于清除屏幕，处理函数为【grub-2.00/grub-core/normal/main.c】的
+*     grub_mini_cmd_clear(),实际就是调用grub_cls ()。
+* 9）	调用grub_set_history()函数设定命令历史深度为GRUB_DEFAULT_HISTORY_SIZE (定义为50) 个
+*     命令。
+* 10）	调用grub_register_variable_hook()函数设定环境变量 paper 的钩子函数，读取钩子函数
+*     为空，写入钩子函数为【grub-2.00/grub-core/normal/main.c】的 grub_env_write_pager 函数。
+* 11）调用grub_env_export()函数设定环境变量 paper 成为全局环境变量，意即可更改的环境变量。
+* 12）调用grub_register_command()函数注册normal 命令，其执行函数为 
+*    【grub-2.00/grub-core/normal/main.c】的grub_cmd_normal() 函数，用于从 rescure 模式进入
+*     normal 模式。
+* 13）调用grub_register_command()函数注册normal_exit 命令，其执行函数为 
+*    【grub-2.00/grub-core/normal/main.c】的grub_cmd_normal_exit() 函数，用于离开 normal 模式
+*    （即进入rescure 模式）。
+* 14）调用grub_register_variable_hook()函数设定环境变量 color_normal 和color_highlight的
+*     写入钩子函数分别为【grub-2.00/grub-core/normal/color.c】的grub_env_write_color_normal()
+*     和grub_env_write_color_highlight()。
+* 15）调用grub_env_export()函数设定环境变量 color_normal 和color_highlight成为全局环境变量。
+* 16）设定环境变量 color_normal 的颜色值，前景颜色为白色，背景颜色为黑色；并设定环境变量
+*     color_highlight 的颜色值，前景颜色为黑色，背景颜色为白色。
+*
+* 下表总结了GRUB_MOD_INIT(normal)中注册的一些关键命令：
+*
+* - 命令							功能														处理函数
+* - authenticate			检查用户是否在USERLIST之中			grub_cmd_authenticate ()
+* - export						导出变量												grub_cmd_export ()
+* - break							跳出循环												grub_script_break ()
+* - continue					继续循环												grub_script_break ()
+* - shift							移动定位参数（$0, $1, $2, ...）	grub_script_shift()
+* - setparams					设置定位参数										grub_script_setparams()
+* - return						从一个函数返回(于bash的语义一致)grub_script_return()
+* - menuentry					定义一个菜单项									grub_cmd_menuentry()
+* - submenu						定义一个子菜单									grub_cmd_menuentry()
+* - clear							清屏幕													grub_mini_cmd_clear()
+* - normal						进入normal模式									grub_cmd_normal()
+* - normal_exit				退出normal模式									grub_cmd_normal_exit()
+**/
 GRUB_MOD_INIT(normal)
 {
   unsigned i;

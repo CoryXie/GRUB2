@@ -226,6 +226,15 @@ grub_dl_resolve_symbol (const char *name)
 *
 * 本函数实现按符号的名字注册符号的功能。通过grub_symbol_hash()先找到这个名字的符号在符
 * 号表grub_symtab中的索引，然后将对应的符号结构插入到对应的符号链表的首项。
+*
+* 这个函数完成了下列步骤：
+* 
+* 1）	分配一个grub_symbol_t结构体，用于保存该符号的信息；
+* 2）	如果导出该符号的是一个模块，那么需要复制一份该符号的名字，因为这个模块不是与核心一
+*     直同在的（可能被释放掉）；否则就直接将sym->name指向符号的名字，因为符号与核心一直同在；
+* 3）	保存符号的地址，所在模块的指针，以及该符号是否是函数等基本信息；
+* 4）	调用grub_symbol_hash()通过对符号名字进行hash处理，得到一个hash数组grub_symtab[]的索引，
+*     将该符号映射到grub_symtab[]数组的对应项中（并排在对应索引的第一个）。
 **/
 /* Register a symbol with the name NAME and the address ADDR.  */
 grub_err_t
@@ -924,6 +933,19 @@ grub_dl_flush_cache (grub_dl_t mod)
 * 解析模块的依赖关系，加载各个段，解析符号，并且重新定位符号；如果前面的操作都成功，则模块
 * 已经加载到内存并经过了验证，于是grub_dl_flush_cache()来同步模块内存；之后grub_dl_call_init()
 * 来初始化模块；最后将该模块通过grub_dl_add()加入全局模块链表。
+*
+* 该函数大致完成了如下步骤：
+* 
+* 1）	检查模块头部信息是否为合法的ELF文件格式；
+* 2）	检查模块授权信息，授权信息必须是 Gplv3+、Gplv3、Gplv2。
+* 3）	从模块内容取得模块名称字符串。
+* 4）	从模块内容取得依赖模块信息，并加载依赖模块。
+* 5）	将模块的区段加载内存，此时的区段(section)成为节区(segment)。
+* 6）	将模块符号表加载内存，并纪录在模块控制结构中。
+* 7）	将重寻址区段指定的符号重新寻址。
+* 8）	当模块的加载程序出错，设定模块完成标志为否，卸除已加载的模块内容，返回值为空指针。
+* 9）	执行模块初始化，此动作就是执行模块的初始化函数 grub_mod_init。每个模块都有模块初始化函数。
+* 10）返回值为模块控制结构。
 **/
 /* Load a module from core memory.  */
 grub_dl_t
@@ -1071,6 +1093,14 @@ grub_dl_load_file (const char *filename)
 * 已经加载的模块链表中是否已经有该模块了，如果有则直接返回该模块；接着按照目标CPU和平
 * 台来找到模块(*.mod)的文件名，接着使用这个文件名来使用grub_dl_load_file()实际加载该模
 * 块文件。
+*
+* 可见grub_dl_load()函数首先通过grub_dl_get()查看是否有对应名字的模块已经被加载到了以
+* grub_dl_head为首的模块链表中，如果有的话，则直接返回该模块。否则，grub_dl_load()函数
+* 就在GRUB的$prefix环境变量(rub_dl_dir = grub_env_get ("prefix"))指定的目录下的lib目录
+* 下对应CPU平台（GRUB_TARGET_CPU"-"GRUB_PLATFORM，例如i386-pc）目录下，寻找对应名字的
+* *.mod模块，并通过grub_dl_load_file()，进而调用grub_dl_load_core()将模块加载进入
+* grub_dl_head为首的模块链表中。为了验证加载进入的模块文件与指定的模块一致，最后还通过
+* 比较加载进入的模块的名字与参数给定的名字是否一致来确认。
 **/
 /* Load a module using a symbolic name.  */
 grub_dl_t

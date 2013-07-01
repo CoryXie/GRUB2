@@ -485,6 +485,66 @@ get_entry_number (grub_menu_t menu, const char *name)
 
 #define GRUB_MENU_PAGE_SIZE 10
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 运行菜单。
+*
+* @note 注释详细内容:
+*
+* 函数run_menu()用于真实的运行菜单，由于该函数代码较长，我们分功能段描述如下：
+*
+* 第一段代码执行步骤如下：
+* 
+* 1）	调用get_entry_number (menu, "default")获得默认的启动项；使用$default环境变量对应的值
+*     与每个菜单项的title或者id进行比较，如果一致则获得了默认要启动的菜单项default_entry；
+* 2）	如果default_entry的范围超过了菜单所有的菜单项，那么就将default_entry设置为0，表示从
+*     第一项开始尝试；
+* 3）	调用grub_menu_get_timeout ()获得当前的超时值，如果为0，就不显示菜单而直接返回刚才找
+*     到的default_entry，并且设置auto_boot为1表示自动启动该菜单项；
+* 4）	初始化计时，将当前时间保存到saved_time中；
+* 5）	调用menu_init()初始化菜单显示；
+* 6）	再次获得超时值timeout，如果timeout大于0，说明有超时功能并且已经开始计时，则打印超时值；
+*     否则就清除超时值。
+*
+* 下面的代码又是一个while(1)循环，并且我们也分两部分来看。第一部分仍然是处理超时功能：
+*
+* 基本上就是在每次循环开始时将当前时间与上一次保存的实际进行比较，如果超过1秒钟就将timeout
+* 变量递减，直到timeout变量变成0；如果timeout最后真的变成了0，说明等待超时，则返回在等待过
+* 程中曾经选择的default_entry，并且清楚timeout环境变量并释放菜单结构。
+* 
+* 循环的下半部接下来就是处理用户输入。这里是在菜单模式下用户输入命令的解析和执行的处理代码，
+* 包括了下列处理：
+* 
+* 1）	用户按“Home”键，或者按Ctrl+A键，就会将current_entry设置为0，并且菜单上显示该菜单项为高亮。
+* 2）	用户按“End”键，或者按Ctrl+E键，就会将current_entry设置为最末一项（menu->size - 1），并
+*     且菜单上显示该菜单项为高亮。
+* 3）	用户按“上箭头”键，或者按Ctrl+P键，就会将current_entry递减，并且菜单上显示当前菜单项的前
+*     一项菜单项为高亮。
+* 4）	用户按“下箭头”键，或者按Ctrl+N键，就会将current_entry递增，并且菜单上显示当前菜单项的后
+*     一项菜单项为高亮。
+* 5）	用户按“Page Up”键，或者按Ctrl+G键，就会将current_entry递减GRUB_MENU_PAGE_SIZE（从而进入
+*     前一页菜单页，如果还可以前进的话），并且菜单上显示当前菜单项的前一页的对应菜单项为高亮。
+* 6）	用户按“Page Down”键，或者按Ctrl+C键，就会将current_entry递增GRUB_MENU_PAGE_SIZE（从而进
+*     入后一页菜单页，如果还可以后退的话），并且菜单上显示当前菜单项的后一页的对应菜单项为高亮。
+* 7）	用户按“回车”或者“换行”键，或者按Ctrl+F键，就会将current_entry返回，并且设置auto_boot为0,
+*     表示强制要启动该选中的菜单项。
+* 8）	如果用户按ESC按键，那么就会退出菜单显示，释放菜单资源，并返回-1。
+* 9）	如果用户按“c”按键，那么就会退出菜单显示，释放菜单资源，并调用grub_cmdline_run (1)来进入
+*     命令行界面。
+* 10）如果用户输入“e”按键，那么表示用户想要编辑当前选中的菜单项，因此会调用grub_menu_get_entry()
+*     获得当前的菜单项，并调用grub_menu_entry_run()来运行该菜单项。
+* 11）如果用户按下的任何其他按键，那么就会扫描所有的菜单项，比对按下的按键是否和某个菜单项对应
+*     的热键对应，如果匹配上，那么意味着用户要使用热键启动对应的菜单项，因此就会释放菜单资源，
+*     并且设置auto_boot为0,表示用户强制要启动该菜单项，并且返回该菜单项对应的菜单索引。
+**/
 /* Show the menu and handle menu entry selection.  Returns the menu entry
    index that should be executed or -1 if no entry should be executed (e.g.,
    Esc pressed to exit a sub-menu or switching menu viewers).
@@ -714,6 +774,32 @@ static struct grub_menu_execute_callback execution_callback =
   .notify_failure = notify_execution_failure
 };
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 显示菜单。
+*
+* @note 注释详细内容:
+*
+* 这个函数也是一个while(1)循环函数，主要完成的功能如下：
+* 
+* 1）	调用run_menu()函数运行菜单，包括显示该菜单的每一项，并且进行超时检查以及用户输入的检测；
+*     如果等待超时，或者用户输入了运行某个菜单项的命令，那么就会退出run_menu()函数，并且返回
+*     要启动的菜单项的索引给boot_entry；
+* 2）	调用grub_menu_get_entry (menu, boot_entry)得到对应要启动的菜单项结构指针；
+* 3）	如果auto_boot是被设置的，也就是前面的run_menu()函数的返回是因为超时原因造成的自动启动，
+*     那么就调用grub_menu_execute_with_fallback()函数来执行选中的选项，并且在开始执行，执行
+*     失败而回退重试，以及最终失败时都会调用execution_callback所指定的函数指针；
+* 4）	否则如果是选中某个菜单项并且敲击了回车而确认要运行某个菜单项，那么就会直接调用
+*     grub_menu_execute_entry()运行该菜单项。
+**/
 static grub_err_t
 show_menu (grub_menu_t menu, int nested, int autobooted)
 {
@@ -745,6 +831,27 @@ show_menu (grub_menu_t menu, int nested, int autobooted)
   return GRUB_ERR_NONE;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 加载并执行GRUB2核心的配置模块。
+*
+* @note 注释详细内容:
+*
+* 这是一个while(1)死循环，在这个循环中完成如下步骤：
+* 
+* 1）	调用show_menu()显示菜单；
+* 2）	如果grub_normal_exit_level变量大于0，则推出菜单显示循环；
+* 3）	调用grub_auth_check_authentication (NULL)进行用户认证，如果认证失败则打印错误并继续
+*     执行该菜单循环；如果认证成功则退出菜单显示。
+**/
 grub_err_t
 grub_show_menu (grub_menu_t menu, int nested, int autoboot)
 {

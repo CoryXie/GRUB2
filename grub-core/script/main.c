@@ -21,6 +21,27 @@
 #include <grub/parser.h>
 #include <grub/script_sh.h>
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 解析并处理一行用户输入。
+*
+* @note 注释详细内容:
+*
+* 函数grub_normal_parse_line()负责解析并处理一行用户输入。注意到传递给函数grub_normal_parse_line()
+* 的getline为grub_normal_read_line_real()，因此可以预见，在执行grub_normal_parse_line()的
+* 过程中如果还需要用户输入，就会调用这个函数，从而用上了该函数中的cont参数（显示“>”让用户
+* 觉得是在继续输入需要的字符串）。该函数首先调用grub_script_parse()来解析输入命令行，返回一个
+* struct grub_script代表的脚步（命令集合）；如果的确解析出了要执行的命令集合，就会调用
+* grub_script_execute()执行命令脚本；之后再用grub_script_unref()来去掉该脚本的定义。
+**/
 grub_err_t
 grub_normal_parse_line (char *line, grub_reader_getline_t getline)
 {

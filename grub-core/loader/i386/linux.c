@@ -369,6 +369,33 @@ grub_linux_setup_video (struct linux_kernel_params *params)
   return GRUB_ERR_NONE;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 启动Linux内核映像
+*
+* @note 注释详细内容: GRUB2启动 Linux过程分析
+*
+* 我们现在关注grub_linux_boot()函数。该函数前面部分主要完成如下操作：
+*
+* 1）	根据用户输入和环境变量，设置显示相关的参数。
+* 2）	设置内存映射，主要是设置e820图。其中使用到了grub_mmap_iterate()函数类枚举个内存段。
+*
+* 最有意义的是在函数的最后，使用如下代码：
+*
+* state.ebp = state.edi = state.ebx = 0;
+* state.esi = real_mode_target;
+* state.esp = real_mode_target;
+* state.eip = params->code32_start;
+* return grub_relocator32_boot (relocator, state, 0);
+**/
 static grub_err_t
 grub_linux_boot (void)
 {
@@ -664,6 +691,58 @@ grub_linux_unload (void)
   return GRUB_ERR_NONE;
 }
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 加载Linux内核映像
+*
+* @note 注释详细内容: GRUB2启动 Linux过程分析
+*
+* 我们先关注grub_cmd_linux()函数的实现。前面我们看到linux命令的第一个参数就是Linux内核映像，
+* 例如/boot/vmlinuz-3.5.0-17-generic。这里，我们可以在grub_cmd_linux()函数内见到，其操作
+* 的第一步就是调用grub_file_open()打开其第一个参数对应的文件，并读取该文件前面的内容，进
+* 入struct linux_kernel_header类型的局部变量lh中。
+*
+* 这里的目的首先是要验证所指定的Linux内核映像是否符合GRUB 2能支持的格式，这是通过对比文件头
+* 部的一些特殊字段实现的。Linux内核映像的头部其实是内核源代码的[linux/arch/x86/boot/header.S]
+* 编译后的二进制。通过命令：
+* - # hexdump –C /boot/vmlinuz-3.5.0-17-generic | less
+* 我们可以查看vmlinuz-3.5.0-17-generic文件的头部，如下面的截图所示。grub_cmd_linux()函数的后
+* 面部分接着就是要对比一些关键位置上的值是否符合格式， 其中包括对boot_flag，setup_sects，
+* header，loadflags等的验证。
+*
+* 接着，根据version的不同，得出几个重要的参数， 例如maximal_cmdline_size（linux内核命令行参数
+* 区域大小），preffered_address （内核被读入后放置的最佳位置）等；然后调用allocate_pages()分
+* 配内核使用的内存。
+*
+* 下一步就是填写linux_params结构，包括type_of_loader，cl_magic，loadflags等等；填写过程中有
+* 两种可能：
+*
+* 1）	从内核映像的头部读取现有默认参数，例如：
+*
+* - grub_memcpy (&params->setup_sects, &lh.setup_sects, sizeof (lh) - 0x1F1);
+*
+* 2）	根据loader本身特性填写，例如：
+*
+* - params->type_of_loader = GRUB_LINUX_BOOT_LOADER_TYPE;
+*  
+* 在此之后，分配maximal_cmdline_size大小的空间给linux_cmdline，并根据用户命令输入来填写具体内容。
+*
+* - grub_create_loader_cmdline (argc, argv,  linux_cmdline + sizeof (LINUX_IMAGE) - 1,
+*			      maximal_cmdline_size - (sizeof (LINUX_IMAGE) - 1));
+*
+* 在完成上述操作后，grub_cmd_linux()就将内核映像剩余的部分读入内存，这是通过简单的调用
+* grub_file_read (file, prot_mode_mem, len)完成的。最后，如果前面的操作都成功，则调用
+* grub_loader_set()将grub_loader_boot_func和grub_loader_unload_func分别设置为
+* grub_linux_boot()和grub_linux_unload()函数。
+**/
 static grub_err_t
 grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 		int argc, char *argv[])
@@ -1034,6 +1113,33 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   return grub_errno;
 }
 
+
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 加载initrd内核映像
+*
+* @note 注释详细内容: GRUB2启动 Linux过程分析
+*
+* 该函数首先通过参数个数argc来打开所有需要读入的initrd文件,并将所有文件的大小加起来得出实
+* 际要读入的大小，之后再将大小转换成物理内存页数。
+*
+* 之后再计算读入内存的可能范围，得出addr_min和addr_max，进而得出实际可以存放的地址。
+*
+* 进一步，通过grub_relocator_alloc_chunk_align()分配出这片内存，首地址存在变量ch中返回，
+* 接着设置initrd_mem和initrd_mem_target。
+*
+* 再下一步就是通过grub_file_read (files[i], ptr, cursize)将这些文件读入前面分配的内存，并
+* 设置linux_params中的重要参数ramdisk_image，ramdisk_size，以及root_dev，这主要是为了能够
+* 通知内核在哪里找到initrd，以及实际需要解析的大小；同时还有跟设备号。
+**/
 static grub_err_t
 grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
 		 int argc, char *argv[])
@@ -1155,6 +1261,28 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
 
 static grub_command_t cmd_linux, cmd_initrd;
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 注册加载Linux内核映像和initrd映像命令
+*
+* @note 注释详细内容: GRUB2启动 Linux过程分析
+*
+* GRUB 2本身作为操作系统的启动加载器，其核心功能自然是要能够加载各种操作系统。前面说过
+* normal模块是GRUB 2的核心，通过它调用其他模块， 而加载这些模块的最终目的都是为加载操作
+* 系统服务的（辅助作用）。GRUB 2为加载各种操作系统都实现了相应的加载器模块，这些模块源
+* 代码被放在grub-2.00/grub-core/ loader目录下。GRUB 2对i386架构提供两种linux加载器，常
+* 规情况下是加载32位Linux操作系统,即本节要讲述的linux模块命令；但是对于某些老版本的Linux
+* （仅仅从16位开始运行的Linux），则提供linux16模块命令，然而我们本节不关注linux16模块命令，
+* 而关注linux模块命令。
+**/
 GRUB_MOD_INIT(linux)
 {
   cmd_linux = grub_register_command ("linux", grub_cmd_linux,

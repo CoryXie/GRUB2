@@ -157,6 +157,35 @@ struct grub_dl_dep
 };
 typedef struct grub_dl_dep *grub_dl_dep_t;
 
+/**
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
+*
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
+*
+* @author 注释添加人员：谢文学
+*
+* @date 注释添加日期：2013年6月28日
+*
+* @brief 可加载模块结构。
+*
+* @note 注释详细内容: 
+*
+* 下面对该struct grub_dl结构的关键字段进行说明：
+* 
+* - name，该模块的名字，用以按名字查找的关键字；
+* - ref_count，模块引用计数；；
+* - dep，模块的依赖列表；
+* - segment，模块的各个分段信息；
+* - symtab，模块的符号表信息；
+* - init，模块初始化函数；
+* - fini，模块退出函数；
+* - got，模块全局偏移表（IA64和PPC架构特定）；
+* - tramp，模块的弹簧床区域（IA64和PPC架构特定）；
+* - base，模块的基地址；
+* - sz，模块的大小；
+* - next，模块链表的下一个模块的指针。
+**/
 #ifndef GRUB_UTIL
 struct grub_dl
 {
