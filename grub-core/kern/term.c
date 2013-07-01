@@ -32,22 +32,22 @@ void (*grub_term_poll_usb) (void) = NULL;
 void (*grub_net_poll_cards_idle) (void) = NULL;
 
 /**
-* @attention ��ע�͵õ���"�˸߻�"�Ƽ��ش�ר��2012����⡰��Դ����ϵͳ�ں˷����Ͱ�ȫ������
-*�������ţ�2012ZX01039-004������������
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
 *
-* @copyright ע�����ӵ�λ���廪��ѧ����03����Linux�ں����ͨ�û����������������е���λ
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
 *
-* @author ע��������Ա��л��ѧ
+* @author 注释添加人员：谢文学
 *
-* @date ע���������ڣ�2013��6��21��
+* @date 注释添加日期：2013年6月21日
 *
-* @brief ���һ��Unicode�ַ���
+* @brief 输出一个Unicode字符。
 *
-* @note ע����ϸ����:
+* @note 注释详细内容:
 *
-* ������ʵ�����һ��Unicode�ַ��Ĺ��ܡ���ʵ�ʵ�Ҫ������ַ�������grub_unicode_glyph�ṹ�У�
-* Ȼ������ն˵�����ַ��������ʵ�ʵ����������'\t'����'\n'������Ӧ��չ���ݹ���ñ�����
-* ����չ��
+* 本函数实现输出一个Unicode字符的功能。将实际的要输出的字符保存在grub_unicode_glyph结构中，
+* 然后调用终端的输出字符换上完成实际的输出。遇到'\t'或者'\n'会做相应扩展，递归调用本函数
+* 来扩展。
 **/
 /* Put a Unicode character.  */
 static void
@@ -82,27 +82,27 @@ grub_putcode_dumb (grub_uint32_t code,
 }
 
 /**
-* @attention ��ע�͵õ���"�˸߻�"�Ƽ��ش�ר��2012����⡰��Դ����ϵͳ�ں˷����Ͱ�ȫ������
-*�������ţ�2012ZX01039-004������������
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
 *
-* @copyright ע�����ӵ�λ���廪��ѧ����03����Linux�ں����ͨ�û����������������е���λ
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
 *
-* @author ע��������Ա��л��ѧ
+* @author 注释添加人员：谢文学
 *
-* @date ע���������ڣ�2013��6��21��
+* @date 注释添加日期：2013年6月21日
 *
-* @brief ����ַ�����
+* @brief 输出字符串。
 *
-* @note ע����ϸ����:
+* @note 注释详细内容:
 *
-* ������ʵ������ַ����Ĺ��ܡ�
+* 本函数实现输出字符串的功能。
 *
-* ʵ����grub_xputs()��һ������ָ�룬�ڡ�grub-2.00/grub-core/kern/term.c���б�ָ��Ϊָ��
-* ����grub_xputs_dumb()�������grub_xputs_dumb()����ʵ�����ǶԲ���str��ÿ���ַ�(�����
-* �ַ�����0x7f�����Ϊ��?��)��Ȼ��ʹ��FOR_ACTIVE_TERM_OUTPUTS()�������еĻ�Ծ�ն˵���
-* grub_putcode_dumb()�����������ˣ������ǽ�Ҫ������ַ�����struct grub_unicode_glyph
-* ���棬Ȼ�����յ���term->putchar()��ʵ������ġ���������Ʊ��������߻س����ţ�������
-* Ӧ����չ������
+* 实际上grub_xputs()是一个函数指针，在【grub-2.00/grub-core/kern/term.c】中被指定为指向
+* 函数grub_xputs_dumb()。这里的grub_xputs_dumb()函数实际上是对参数str的每个字符(如果该
+* 字符大于0x7f则改其为“?”)，然后使用FOR_ACTIVE_TERM_OUTPUTS()来向所有的活跃终端调用
+* grub_putcode_dumb()进行输出。因此，这里是将要输出的字符放在struct grub_unicode_glyph
+* 里面，然后最终调用term->putchar()来实际输出的。如果遇到制表符，或者回车符号，都会相
+* 应做扩展处理。
 **/
 static void
 grub_xputs_dumb (const char *str)
@@ -121,23 +121,23 @@ grub_xputs_dumb (const char *str)
 
 void (*grub_xputs) (const char *str) = grub_xputs_dumb;
 /**
-* @attention ��ע�͵õ���"�˸߻�"�Ƽ��ش�ר��2012����⡰��Դ����ϵͳ�ں˷����Ͱ�ȫ������
-*�������ţ�2012ZX01039-004������������
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
 *
-* @copyright ע�����ӵ�λ���廪��ѧ����03����Linux�ں����ͨ�û����������������е���λ
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
 *
-* @author ע��������Ա��л��ѧ
+* @author 注释添加人员：谢文学
 *
-* @date ע���������ڣ�2013��6��21��
+* @date 注释添加日期：2013年6月21日
 *
-* @brief �������ػ��һ���ַ����롣
+* @brief 非阻塞地获得一个字符输入。
 *
-* @note ע����ϸ����:
+* @note 注释详细内容:
 *
-* �������������ػ��һ���ַ�����Ĺ��ܡ������USB�������룬�����grub_term_poll_usb()��
-* ������������룬�����grub_net_poll_cards_idle()��֮��ʹ��FOR_ACTIVE_TERM_INPUTS()��
-* ÿ���ն˵���getkey()����ȡ�����ַ�������������ַ����򷵻ض�����ַ�������ͷ���û��
-* ����ı�־GRUB_TERM_NO_KEY��
+* 本函数非阻塞地获得一个字符输入的功能。如果有USB串口输入，则调用grub_term_poll_usb()；
+* 如果有网卡输入，则调用grub_net_poll_cards_idle()；之后使用FOR_ACTIVE_TERM_INPUTS()对
+* 每个终端调用getkey()来读取输入字符。如果读到有字符，则返回读入的字符；否则就返回没有
+* 读入的标志GRUB_TERM_NO_KEY。
 **/
 int
 grub_getkey_noblock (void)
@@ -161,21 +161,21 @@ grub_getkey_noblock (void)
 }
 
 /**
-* @attention ��ע�͵õ���"�˸߻�"�Ƽ��ش�ר��2012����⡰��Դ����ϵͳ�ں˷����Ͱ�ȫ������
-*�������ţ�2012ZX01039-004������������
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
 *
-* @copyright ע�����ӵ�λ���廪��ѧ����03����Linux�ں����ͨ�û����������������е���λ
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
 *
-* @author ע��������Ա��л��ѧ
+* @author 注释添加人员：谢文学
 *
-* @date ע���������ڣ�2013��6��21��
+* @date 注释添加日期：2013年6月21日
 *
-* @brief �����ػ��һ���ַ����롣
+* @brief 阻塞地获得一个字符输入。
 *
-* @note ע����ϸ����:
+* @note 注释详细内容:
 *
-* �����������ػ��һ���ַ�����Ĺ��ܡ�ѭ���ص���grub_getkey_noblock()ֱ���ú�������
-* һ����Ч���ַ����루����GRUB_TERM_NO_KEY����
+* 本函数阻塞地获得一个字符输入的功能。循环地调用grub_getkey_noblock()直到该函数返回
+* 一个有效的字符输入（不是GRUB_TERM_NO_KEY）。
 **/
 int
 grub_getkey (void)
@@ -193,20 +193,20 @@ grub_getkey (void)
     }
 }
 /**
-* @attention ��ע�͵õ���"�˸߻�"�Ƽ��ش�ר��2012����⡰��Դ����ϵͳ�ں˷����Ͱ�ȫ������
-*�������ţ�2012ZX01039-004������������
+* @attention 本注释得到了"核高基"科技重大专项2012年课题“开源操作系统内核分析和安全性评估
+*（课题编号：2012ZX01039-004）”的资助。
 *
-* @copyright ע�����ӵ�λ���廪��ѧ����03����Linux�ں����ͨ�û����������������е���λ
+* @copyright 注释添加单位：清华大学——03任务（Linux内核相关通用基础软件包分析）承担单位
 *
-* @author ע��������Ա��л��ѧ
+* @author 注释添加人员：谢文学
 *
-* @date ע���������ڣ�2013��6��21��
+* @date 注释添加日期：2013年6月21日
 *
-* @brief ˢ���նˡ�
+* @brief 刷新终端。
 *
-* @note ע����ϸ����:
+* @note 注释详细内容:
 *
-* ������ˢ���ն˵Ĺ��ܡ�����FOR_ACTIVE_TERM_OUTPUTS()��ÿ���ն˵���grub_term_refresh()��
+* 本函数刷新终端的功能。调用FOR_ACTIVE_TERM_OUTPUTS()对每个终端调用grub_term_refresh()。
 **/
 void
 grub_refresh (void)
